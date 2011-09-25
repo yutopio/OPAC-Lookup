@@ -1,28 +1,18 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Net;
-using System.Text;
 using System.Linq;
+using System.Text;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using System.IO;
-using System.Xml;
 
 namespace OpacLookup
 {
-	class Program
+	class Lookup
 	{
 		const string searchUT = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=0&kywd1_exp={0}&con1_exp=6";
-		const string searchWebCat = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=1&nii_kywd1_exp={0}&nii_con1_exp=6";
+		const string searchWebcat = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=1&nii_kywd1_exp={0}&nii_con1_exp=6";
 		const string lookupBibid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?lang=0&amode=11&bibid={0}";
 		const string lookupNcid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?amode=13&dbname=BOOK&ncid={0}";
-
-		/* For Lookup by ISSN (magazines)
-		const string searchUT = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=0&kywd1_exp={0}&con1_exp=7";
-		const string searchWebCat = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=1&nii_kywd1_exp={0}&nii_con1_exp=7";
-		const string lookupBibid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?lang=0&amode=12&bibid={0}";
-		const string lookupNcid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?amode=13&dbname=BOOK&ncid={0}";
-		*/
 
 		const string resultMarker = "list_result";
 		const string bibidMarker = "bibid=";
@@ -38,110 +28,79 @@ namespace OpacLookup
 
 		const string libraryEntryBegin = "bl_item_tr\">";
 		const string libraryEntryEnd = "</tr>";
-		const string engLib2Marker = "工2・図書室";
 
-		static void Main(string[] args)
+		public static Tuple<List<Tuple<string, string>>, List<Dictionary<string, string>>> SearchByISBN(string ISBN, out string bibID, out string NCID)
 		{
-			var c = new WebClient();
-
-			var isbnI = 0;
-			var isbn = new[] { "9784901347259", "9784901347266" };
-
-		Start:
-			if (isbnI == isbn.Length) return;
-
-			var ISBN = isbn[isbnI++];
-			var fs = new FileStream(string.Format(@"D:\Desktop\books\{0}.xml", ISBN), FileMode.Create, FileAccess.Write);
-			var xw = XmlWriter.Create(fs);
-			var start = Environment.TickCount;
-
 			try
 			{
-				xw.WriteStartDocument();
-				xw.WriteStartElement("Book");
-
-				// First we look up the book by UT OPAC.
-				string searchPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(searchUT, ISBN)));
+				int i, j;
 				string detailPage = null;
-				var index = searchPage.IndexOf(resultMarker);
-				if (index != -1)
+				try
 				{
-					// If the book is available at UT library, obtain the bibID and download the detailed information.
-					index = searchPage.IndexOf(bibidMarker, index) + bibidMarker.Length;
-					var bibid = searchPage.Substring(index, searchPage.IndexOf('&', index) - index);
-					xw.WriteStartAttribute("bibid");
-					xw.WriteValue(bibid);
-					xw.WriteEndAttribute();
-
-					detailPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(lookupBibid, bibid)));
-				}
-				else
-				{
-					// If unavailable, look up the book from WebCat.
-					searchPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(searchWebCat, ISBN)));
-					index = searchPage.IndexOf(resultMarker);
-					if (index != -1)
+					// First we look up the book by UT OPAC.
+					var c = new WebClient();
+					var searchPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(searchUT, ISBN)));
+					i = searchPage.IndexOf(resultMarker);
+					if (i != -1)
 					{
-						index = searchPage.IndexOf(ncidMarker, index) + ncidMarker.Length;
-						var ncid = searchPage.Substring(index, searchPage.IndexOf('&', index) - index);
-						xw.WriteStartAttribute("ncid");
-						xw.WriteValue(ncid);
-						xw.WriteEndAttribute();
-
-						detailPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(lookupNcid, ncid)));
+						// If the book is available at UT library, obtain the bibID and download the detailed information.
+						i = searchPage.IndexOf(bibidMarker, i) + bibidMarker.Length;
+						bibID = searchPage.Substring(i, searchPage.IndexOf('&', i) - i);
+						NCID = null;
+						detailPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(lookupBibid, bibID)));
 					}
 					else
 					{
-						// Didn't find the book on UT or WebCat.
-						// throw new ApplicationException("No such book found either at UT Library or on WebCat.");
-						goto Start;
+						// If unavailable, look up the book from Webcat.
+						searchPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(searchWebcat, ISBN)));
+						i = searchPage.IndexOf(resultMarker);
+						if (i != -1)
+						{
+							i = searchPage.IndexOf(ncidMarker, i) + ncidMarker.Length;
+							bibID = null;
+							NCID = searchPage.Substring(i, searchPage.IndexOf('&', i) - i);
+							detailPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(lookupNcid, NCID)));
+						}
+						else
+						{
+							// Didn't find the book on UT or Webcat.
+							throw new ApplicationException("書籍が見つかりませんでした。");
+						}
 					}
-				}
 
-				// Assure no more result hit.
-				Debug.Assert(searchPage.IndexOf(resultMarker, index) == -1);
+					// Assure no more result hit.
+					if (searchPage.IndexOf(resultMarker, i) != -1)
+						throw new ApplicationException("複数件の書籍が見つかりました。手動で検索してください。");
+				}
+				catch (WebException exp) { throw new ApplicationException("OPAC に接続中にエラーが発生しました。ネットワークに関係する問題が発生しています。", exp); }
 
 				// Start to get the detail.
-
 				var detail = new List<Tuple<string, string>>();
 
-				index = detailPage.IndexOf(bookDetailTitleBegin) + bookDetailTitleBegin.Length;
-				var title = detailPage.Substring(index, detailPage.IndexOf(bookDetailTitleEnd, index) - index);
+				// Obtain the book title.
+				i = detailPage.IndexOf(bookDetailTitleBegin) + bookDetailTitleBegin.Length;
+				var title = detailPage.Substring(i, detailPage.IndexOf(bookDetailTitleEnd, i) - i);
 				detail.Add(new Tuple<string, string>("Title", title));
 
-			BeginDetail:
-				var index2 = detailPage.IndexOf(bookDetailEntryBegin, index);
-				if (index2 == -1) goto EndDetail;
-				index = detailPage.IndexOf(bookDetailEntryType1, index2 + bookDetailEntryBegin.Length);
-				index = detailPage.IndexOf(bookDetailEntryType2, index) + bookDetailEntryType2.Length;
-				index2 = detailPage.IndexOf(bookDetailEntryValue, index);
-				var type = detailPage.Substring(index, index2 - index);
-				index2 += bookDetailEntryValue.Length;
-				index = detailPage.IndexOf(bookDetailEntryEnd, index2);
-				var value = detailPage.Substring(index2, index - index2);
-				detail.Add(new Tuple<string, string>(type, value));
-				goto BeginDetail;
-
-			EndDetail:
-				xw.WriteStartElement("Detail");
-				foreach (var keyValue in detail)
+				// Obtain each detail field of the book.
+				while ((j = detailPage.IndexOf(bookDetailEntryBegin, i)) != -1)
 				{
-					xw.WriteStartElement("Record");
-					xw.WriteStartAttribute("key");
-					xw.WriteValue(keyValue.Item1);
-					xw.WriteEndAttribute();
-					xw.WriteCData(keyValue.Item2);
-					xw.WriteEndElement();
+					i = detailPage.IndexOf(bookDetailEntryType1, j + bookDetailEntryBegin.Length);
+					i = detailPage.IndexOf(bookDetailEntryType2, i) + bookDetailEntryType2.Length;
+					j = detailPage.IndexOf(bookDetailEntryValue, i);
+					var type = detailPage.Substring(i, j - i);
+					j += bookDetailEntryValue.Length;
+					i = detailPage.IndexOf(bookDetailEntryEnd, j);
+					var value = detailPage.Substring(j, i - j);
+					detail.Add(new Tuple<string, string>(type, value));
 				}
-				xw.WriteEndElement();
 
-				var eng2list = new List<Dictionary<string, string>>();
-			Eng2Search:
-				index = detailPage.IndexOf(libraryEntryBegin, index);
-				if (index != -1)
+				// If the book is stored at UT Library, get the location list.
+				var collectionList = new List<Dictionary<string, string>>();
+				while ((i = detailPage.IndexOf(libraryEntryBegin, i)) != -1)
 				{
-					index2 = detailPage.IndexOf(libraryEntryEnd, index += libraryEntryBegin.Length);
-					var doc = XDocument.Parse("<root>" + detailPage.Substring(index, index2 - index) + "</root>");
+					j = detailPage.IndexOf(libraryEntryEnd, i += libraryEntryBegin.Length);
+					var doc = XDocument.Parse("<A>" + detailPage.Substring(i, j - i) + "</A>");
 
 					var book = new Dictionary<string, string>();
 					foreach (var elem in doc.Descendants("td"))
@@ -153,33 +112,64 @@ namespace OpacLookup
 						else if (elem.Element("br") == null) fieldValue = elem.Value;
 						book.Add(fieldName, fieldValue);
 					}
-					eng2list.Add(book);
-
-					goto Eng2Search;
+					collectionList.Add(book);
 				}
 
-				xw.WriteStartElement("Collection");
-				foreach (var eng2book in eng2list)
-				{
-					xw.WriteStartElement("Info");
-					foreach (var eng2bookInfo in eng2book)
-					{
-						xw.WriteStartElement(eng2bookInfo.Key);
-						xw.WriteString(eng2bookInfo.Value);
-						xw.WriteEndElement();
-					}
-					xw.WriteEndElement();
-				}
-				xw.WriteEndElement();
+				return new Tuple<List<Tuple<string, string>>, List<Dictionary<string, string>>>(detail, collectionList);
 			}
-			finally
+			catch (IndexOutOfRangeException) { throw new ApplicationException("OPAC での検索結果の処理中にエラーが発生しました。このプログラムの設計に問題があります。"); }
+		}
+
+		public static string ValidateISBN(string code)
+		{
+			if (string.IsNullOrEmpty(code)) throw new ArgumentNullException("code");
+			code = code.Trim().Replace("-", "");
+			if (code.Length == 10)
 			{
-				xw.WriteEndDocument();
-				xw.Close();
-				Console.WriteLine("{0}\t{1}", ISBN, Environment.TickCount - start);
+				var sum = 0;
+				for (var i = 0; i < 9; i++)
+				{
+					var t = code[i] - '0';
+					if (t < 0 || t > 9) throw new ArgumentOutOfRangeException("code");
+					sum += t * (10 - i);
+				}
+				if (!"0X987654321".Contains(code[9])) throw new ArgumentOutOfRangeException("code");
+				if (code[9] != "0X987654321"[sum % 11]) throw new ArgumentException();
 			}
+			else if (code.Length == 13)
+			{
+				var sum = 0;
+				for (var i = 0; i < 12; i++)
+				{
+					var t = code[i] - '0';
+					if (t < 0 || t > 9) throw new ArgumentOutOfRangeException("code");
+					sum += t * ((i & 1) == 0 ? 1 : 3);
+				}
+				if (!"0987654321".Contains(code[12])) throw new ArgumentOutOfRangeException("code");
+				if (code[12] != "0987654321"[sum % 10]) throw new ArgumentException();
+			}
+			else throw new ArgumentOutOfRangeException("code");
+			return code;
+		}
 
-			goto Start;
+		public static void AnalyzeCodeString(string codes, out string BibID, out string NCID)
+		{
+			try
+			{
+				codes = codes.Replace("&nbsp;", " ");
+				var nodes = XElement.Parse("<A>" + codes + "</A>").Nodes().ToArray();
+				if (nodes.Length == 2)
+				{
+					BibID = null;
+					NCID = nodes[1].ToString();
+				}
+				else
+				{
+					BibID = nodes[1].ToString();
+					NCID = nodes[3].ToString();
+				}
+			}
+			catch (Exception exp) { throw new ApplicationException("書誌 ID および NCID の取得中にエラーが発生しました。", exp); }
 		}
 	}
 }
