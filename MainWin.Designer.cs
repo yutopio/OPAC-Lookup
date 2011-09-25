@@ -244,7 +244,7 @@ namespace OpacLookup
 			// dataGridViewTextBoxColumn1
 			// 
 			this.dataGridViewTextBoxColumn1.DataPropertyName = "ISBN";
-			this.dataGridViewTextBoxColumn1.HeaderText = "ISBN";
+			this.dataGridViewTextBoxColumn1.HeaderText = "登録番号";
 			this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
 			this.dataGridViewTextBoxColumn1.Width = 110;
 			// 

@@ -9,8 +9,8 @@ namespace OpacLookup
 {
 	class Lookup
 	{
-		const string searchUT = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=0&kywd1_exp={0}&con1_exp=6";
-		const string searchWebcat = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=1&nii_kywd1_exp={0}&nii_con1_exp=6";
+		const string searchUT = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=0&kywd1_exp={0}&con1_exp=12";
+		const string searchWebcat = null;
 		const string lookupBibid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?lang=0&amode=11&bibid={0}";
 		const string lookupNcid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?amode=13&dbname=BOOK&ncid={0}";
 
@@ -126,27 +126,11 @@ namespace OpacLookup
 			code = code.Trim().Replace("-", "");
 			if (code.Length == 10)
 			{
-				var sum = 0;
 				for (var i = 0; i < 9; i++)
 				{
 					var t = code[i] - '0';
 					if (t < 0 || t > 9) throw new ArgumentOutOfRangeException("code");
-					sum += t * (10 - i);
 				}
-				if (!"0X987654321".Contains(code[9])) throw new ArgumentOutOfRangeException("code");
-				if (code[9] != "0X987654321"[sum % 11]) throw new ArgumentException();
-			}
-			else if (code.Length == 13)
-			{
-				var sum = 0;
-				for (var i = 0; i < 12; i++)
-				{
-					var t = code[i] - '0';
-					if (t < 0 || t > 9) throw new ArgumentOutOfRangeException("code");
-					sum += t * ((i & 1) == 0 ? 1 : 3);
-				}
-				if (!"0987654321".Contains(code[12])) throw new ArgumentOutOfRangeException("code");
-				if (code[12] != "0987654321"[sum % 10]) throw new ArgumentException();
 			}
 			else throw new ArgumentOutOfRangeException("code");
 			return code;
