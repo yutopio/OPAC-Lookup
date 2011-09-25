@@ -60,10 +60,10 @@ namespace OpacLookup
 			if (!row.IsISBNInternalNull() && row.ISBN == row.ISBNInternal) return;
 
 			// If the current row is being processed, stop the thread first.
-			if (processingThreads.ContainsKey(row.ID))
+			if (processingThreads.ContainsKey(row.QueryID))
 			{
-				processingThreads[row.ID].Abort();
-				processingThreads.Remove(row.ID);
+				processingThreads[row.QueryID].Abort();
+				processingThreads.Remove(row.QueryID);
 			}
 
 			// Clear the previous erorrs.
@@ -76,10 +76,6 @@ namespace OpacLookup
 			catch (ArgumentOutOfRangeException) { row.SetColumnError(table.ISBNColumn, "ISBN の形式に誤りがあります。"); }
 			catch (ArgumentException) { row.SetColumnError(table.ISBNColumn, "ISBN に誤りがあります。"); }
 
-			// Check whether there is a book already searched with the same ISBN.
-			if (ISBN != null && this.bookDataset.Books.Count(x => !x.IsISBNNull() && x.ISBN == ISBN) > 1)
-				row.SetColumnError(table.ISBNColumn, "同一の ISBN で以前に検索がすでに行われています。");
-
 			if (row.HasErrors)
 			{
 				// There is an error with ISBN.
@@ -90,6 +86,7 @@ namespace OpacLookup
 
 			// Refresh the database.
 			row.BeginEdit();
+			
 			row.Output = false;
 			row.ISBNInternal = row.ISBN = ISBN;
 			row.Title = "待機中";
@@ -106,7 +103,7 @@ namespace OpacLookup
 			this.bookDataset.LibraryCollection.Where(x => x.BooksRow == row).ToList().ForEach(x => x.Delete());
 
 			// Start the query.
-			var id = row.ID;
+			var id = row.QueryID;
 			var rowLock = new object();
 			var t = new Thread(() => SearchStart(ISBN, row, id, rowLock));
 			processingThreads.Add(id, t);
@@ -117,7 +114,7 @@ namespace OpacLookup
 
 		void _Books_RowDeleting(object sender, DataRowChangeEventArgs e)
 		{
-			var id = ((BookDataset.BooksRow)e.Row).ID;
+			var id = ((BookDataset.BooksRow)e.Row).QueryID;
 			try
 			{
 				// Abort the thread.
@@ -159,12 +156,17 @@ namespace OpacLookup
 					// when this thread is requested to abort.
 					Monitor.Exit(rowLocks[rowID]);
 
-					lock (rowLock) row.Title = "ダウンロード中";
+					lock (rowLock) row.Title = "問い合わせ中";
 
 					// Look up the book by ISBN.
 					Tuple<List<Tuple<string, string>>, List<Dictionary<string, string>>> result;
 					string bibid, ncid;
-					try { result = Lookup.SearchByISBN(ISBN, out bibid, out ncid); }
+					try
+					{
+						var records = Lookup.SearchByISBN(ISBN);
+						if (records.Length != 1) throw new ApplicationException("複数件の書籍がヒットしました。");
+						result = Lookup.ExtractDataByDetailPage(records[0]);
+					}
 					catch (ApplicationException exp)
 					{
 						var message = exp.Message;

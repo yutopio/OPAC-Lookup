@@ -21,7 +21,7 @@ namespace OpacLookup
 			this.booksBindingNavigator = new BindingNavigator(this.components);
 			this.bindingNavigatorAddNewItem = new ToolStripButton();
 			this.booksBindingSource = new BindingSource(this.components);
-			this.bookDataset = new BookDataset();
+			this.bookDataset = new OpacLookup.BookDataset();
 			this.bindingNavigatorCountItem = new ToolStripLabel();
 			this.bindingNavigatorDeleteItem = new ToolStripButton();
 			this.bindingNavigatorMoveFirstItem = new ToolStripButton();
@@ -36,9 +36,11 @@ namespace OpacLookup
 			this.booksBindingNavigatorOpenItem = new ToolStripButton();
 			this.booksBindingNavigatorSaveItem = new ToolStripButton();
 			this.booksDataGridView = new DataGridView();
+			this.saveFileDialog1 = new SaveFileDialog();
+			this.openFileDialog1 = new OpenFileDialog();
 			this.dataGridViewCheckBoxColumn1 = new DataGridViewCheckBoxColumn();
 			this.dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
-			this.dataGridViewTextBoxColumn2 = new DataGridViewTextBoxColumn();
+			this.dataGridViewTextBoxColumn2 = new DataGridViewLinkColumn();
 			this.dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn4 = new DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn5 = new DataGridViewTextBoxColumn();
@@ -46,8 +48,6 @@ namespace OpacLookup
 			this.dataGridViewLinkColumn6 = new DataGridViewLinkColumn();
 			this.dataGridViewTextBoxColumn7 = new DataGridViewTextBoxColumn();
 			this.dataGridViewTextBoxColumn8 = new DataGridViewTextBoxColumn();
-			this.saveFileDialog1 = new SaveFileDialog();
-			this.openFileDialog1 = new OpenFileDialog();
 			((ISupportInitialize)(this.booksBindingNavigator)).BeginInit();
 			this.booksBindingNavigator.SuspendLayout();
 			((ISupportInitialize)(this.booksBindingSource)).BeginInit();
@@ -234,6 +234,18 @@ namespace OpacLookup
 			this.booksDataGridView.CellContentClick += new DataGridViewCellEventHandler(this.booksDataGridView_CellContentClick);
 			this.booksDataGridView.DataError += new DataGridViewDataErrorEventHandler(this.booksDataGridView_DataError);
 			// 
+			// saveFileDialog1
+			// 
+			this.saveFileDialog1.DefaultExt = "*.csv";
+			this.saveFileDialog1.Filter = "カンマ区切りファイル (*.csv)|*.csv|タブ区切りファイル (*.txt)|*.txt";
+			this.saveFileDialog1.Title = "保存先のファイルを指定";
+			// 
+			// openFileDialog1
+			// 
+			this.openFileDialog1.Filter = "テキスト ファイル (*.txt)|*.txt";
+			this.openFileDialog1.Multiselect = true;
+			this.openFileDialog1.Title = "ISBN 読み込みファイルの指定";
+			// 
 			// dataGridViewCheckBoxColumn1
 			// 
 			this.dataGridViewCheckBoxColumn1.DataPropertyName = "Output";
@@ -250,10 +262,15 @@ namespace OpacLookup
 			// 
 			// dataGridViewTextBoxColumn2
 			// 
+			this.dataGridViewTextBoxColumn2.ActiveLinkColor = SystemColors.ControlText;
 			this.dataGridViewTextBoxColumn2.DataPropertyName = "Title";
 			this.dataGridViewTextBoxColumn2.HeaderText = "タイトル";
+			this.dataGridViewTextBoxColumn2.LinkColor = SystemColors.ControlText;
 			this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
 			this.dataGridViewTextBoxColumn2.ReadOnly = true;
+			this.dataGridViewTextBoxColumn2.Resizable = DataGridViewTriState.True;
+			this.dataGridViewTextBoxColumn2.SortMode = DataGridViewColumnSortMode.Automatic;
+			this.dataGridViewTextBoxColumn2.VisitedLinkColor = SystemColors.ControlText;
 			this.dataGridViewTextBoxColumn2.Width = 400;
 			// 
 			// dataGridViewTextBoxColumn3
@@ -312,18 +329,6 @@ namespace OpacLookup
 			this.dataGridViewTextBoxColumn8.ReadOnly = true;
 			this.dataGridViewTextBoxColumn8.Width = 80;
 			// 
-			// saveFileDialog1
-			// 
-			this.saveFileDialog1.DefaultExt = "*.csv";
-			this.saveFileDialog1.Filter = "カンマ区切りファイル (*.csv)|*.csv|タブ区切りファイル (*.txt)|*.txt";
-			this.saveFileDialog1.Title = "保存先のファイルを指定";
-			// 
-			// openFileDialog1
-			// 
-			this.openFileDialog1.Filter = "テキスト ファイル (*.txt)|*.txt";
-			this.openFileDialog1.Multiselect = true;
-			this.openFileDialog1.Title = "ISBN 読み込みファイルの指定";
-			// 
 			// MainWin
 			// 
 			this.ClientSize = new Size(1175, 537);
@@ -336,9 +341,9 @@ namespace OpacLookup
 			((ISupportInitialize)(this.booksBindingNavigator)).EndInit();
 			this.booksBindingNavigator.ResumeLayout(false);
 			this.booksBindingNavigator.PerformLayout();
-			((ISupportInitialize)this.booksBindingSource).EndInit();
-			((ISupportInitialize)this.bookDataset).EndInit();
-			((ISupportInitialize)this.booksDataGridView).EndInit();
+			((ISupportInitialize)(this.booksBindingSource)).EndInit();
+			((ISupportInitialize)(this.bookDataset)).EndInit();
+			((ISupportInitialize)(this.booksDataGridView)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -361,18 +366,18 @@ namespace OpacLookup
 		ToolStripSeparator bindingNavigatorSeparator3;
 		ToolStripButton booksBindingNavigatorSaveItem;
 		DataGridView booksDataGridView;
-		DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
-		DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-		DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
-		DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-		DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-		DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-		DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-		DataGridViewLinkColumn dataGridViewLinkColumn6;
-		DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
-		DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
 		SaveFileDialog saveFileDialog1;
 		ToolStripButton booksBindingNavigatorOpenItem;
 		OpenFileDialog openFileDialog1;
+		private DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
+		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+		private DataGridViewLinkColumn dataGridViewTextBoxColumn2;
+		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
+		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
+		private DataGridViewLinkColumn dataGridViewLinkColumn6;
+		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
+		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
 	}
 }

@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Collections.Generic;
 using System.Xml.Linq;
+using System.Web;
+using System.Text.RegularExpressions;
 
 namespace OpacLookup
 {
 	class Lookup
 	{
-		const string searchUT = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=0&kywd1_exp={0}&con1_exp=6";
-		const string searchWebcat = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=1&nii_kywd1_exp={0}&nii_con1_exp=6";
+		const string searchUT = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=0&kywd1_exp={0}&con1_exp=6&disp_exp=5";
+		const string searchWebcat = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=1&nii_kywd1_exp={0}&nii_con1_exp=6&nii_disp_exp=5";
 		const string lookupBibid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?lang=0&amode=11&bibid={0}";
 		const string lookupNcid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?amode=13&dbname=BOOK&ncid={0}";
 
@@ -29,95 +31,222 @@ namespace OpacLookup
 		const string libraryEntryBegin = "bl_item_tr\">";
 		const string libraryEntryEnd = "</tr>";
 
-		public static Tuple<List<Tuple<string, string>>, List<Dictionary<string, string>>> SearchByISBN(string ISBN, out string bibID, out string NCID)
+		public class ItemRecord
+		{
+			public FileType Type { get; set; }
+			public string Name { get; set; }
+			public string URL { get; set; }
+			public Tuple<string, string>[] Other { get; set; }
+			public string BibID { get; set; }
+			public string NCID { get; set; }
+		}
+
+		public enum FileType
+		{
+			Book = 10,		// 図書, 和図書, 洋図書
+			AV = 11,		// AV
+			EBook = 19,		// 電子ブック
+			Magazine = 20,	// 雑誌, 和雑誌, 洋雑誌
+			EJournal = 29,	// 電子ジャーナル
+			Unknown = -1
+		}
+
+		public static ItemRecord[] SearchByISBN(string ISBN)
 		{
 			try
 			{
-				int i, j;
-				string detailPage = null;
-				try
-				{
-					// First we look up the book by UT OPAC.
-					var c = new WebClient();
-					var searchPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(searchUT, ISBN)));
-					i = searchPage.IndexOf(resultMarker);
-					if (i != -1)
-					{
-						// If the book is available at UT library, obtain the bibID and download the detailed information.
-						i = searchPage.IndexOf(bibidMarker, i) + bibidMarker.Length;
-						bibID = searchPage.Substring(i, searchPage.IndexOf('&', i) - i);
-						NCID = null;
-						detailPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(lookupBibid, bibID)));
-					}
-					else
-					{
-						// If unavailable, look up the book from Webcat.
-						searchPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(searchWebcat, ISBN)));
-						i = searchPage.IndexOf(resultMarker);
-						if (i != -1)
-						{
-							i = searchPage.IndexOf(ncidMarker, i) + ncidMarker.Length;
-							bibID = null;
-							NCID = searchPage.Substring(i, searchPage.IndexOf('&', i) - i);
-							detailPage = Encoding.UTF8.GetString(c.DownloadData(string.Format(lookupNcid, NCID)));
-						}
-						else
-						{
-							// Didn't find the book on UT or Webcat.
-							throw new ApplicationException("書籍が見つかりませんでした。");
-						}
-					}
+				// First we look up the book by UT OPAC.
+				var items = ObtainBookListOpac(string.Format(searchUT, ISBN));
+				if (items.Length != 0) return items;
 
-					// Assure no more result hit.
-					if (searchPage.IndexOf(resultMarker, i) != -1)
-						throw new ApplicationException("複数件の書籍が見つかりました。手動で検索してください。");
-				}
-				catch (WebException exp) { throw new ApplicationException("OPAC に接続中にエラーが発生しました。ネットワークに関係する問題が発生しています。", exp); }
+				// Then try look up by Webcat.
+				items = ObtainBookListWebcat(string.Format(searchWebcat, ISBN));
+				if (items.Length != 0) return items;
 
-				// Start to get the detail.
-				var detail = new List<Tuple<string, string>>();
-
-				// Obtain the book title.
-				i = detailPage.IndexOf(bookDetailTitleBegin) + bookDetailTitleBegin.Length;
-				var title = detailPage.Substring(i, detailPage.IndexOf(bookDetailTitleEnd, i) - i);
-				detail.Add(new Tuple<string, string>("Title", title));
-
-				// Obtain each detail field of the book.
-				while ((j = detailPage.IndexOf(bookDetailEntryBegin, i)) != -1)
-				{
-					i = detailPage.IndexOf(bookDetailEntryType1, j + bookDetailEntryBegin.Length);
-					i = detailPage.IndexOf(bookDetailEntryType2, i) + bookDetailEntryType2.Length;
-					j = detailPage.IndexOf(bookDetailEntryValue, i);
-					var type = detailPage.Substring(i, j - i);
-					j += bookDetailEntryValue.Length;
-					i = detailPage.IndexOf(bookDetailEntryEnd, j);
-					var value = detailPage.Substring(j, i - j);
-					detail.Add(new Tuple<string, string>(type, value));
-				}
-
-				// If the book is stored at UT Library, get the location list.
-				var collectionList = new List<Dictionary<string, string>>();
-				while ((i = detailPage.IndexOf(libraryEntryBegin, i)) != -1)
-				{
-					j = detailPage.IndexOf(libraryEntryEnd, i += libraryEntryBegin.Length);
-					var doc = XDocument.Parse("<A>" + detailPage.Substring(i, j - i) + "</A>");
-
-					var book = new Dictionary<string, string>();
-					foreach (var elem in doc.Descendants("td"))
-					{
-						var fieldName = elem.Attribute("class").Value;
-						string fieldValue = null;
-						var link = elem.Element("a");
-						if (link != null) fieldValue = link.Value;
-						else if (elem.Element("br") == null) fieldValue = elem.Value;
-						book.Add(fieldName, fieldValue);
-					}
-					collectionList.Add(book);
-				}
-
-				return new Tuple<List<Tuple<string, string>>, List<Dictionary<string, string>>>(detail, collectionList);
+				// Didn't find the book on UT or Webcat.
+				throw new ApplicationException("書籍が見つかりませんでした。");
 			}
 			catch (IndexOutOfRangeException) { throw new ApplicationException("OPAC での検索結果の処理中にエラーが発生しました。このプログラムの設計に問題があります。"); }
+		}
+
+		public static ItemRecord[] ObtainBookListOpac(string url)
+		{
+			return ObtainBookListInternal(url, ProcessOpacItem);
+		}
+
+		public static ItemRecord[] ObtainBookListWebcat(string url)
+		{
+			return ObtainBookListInternal(url, ProcessWebcatItem);
+		}
+
+		static ItemRecord[] ObtainBookListInternal(string url, Func<XElement[], ItemRecord> processor)
+		{
+			// Download the search result page.
+			var list = DownloadUTF8(url);
+
+			// Look for the items list. If not found, the query didn't have any matches.
+			var i = list.IndexOf("<div id=\"main_list\">");
+			if (i == -1) return new ItemRecord[0];
+
+			var j = list.IndexOf("<div class=\"link_block\">", i);
+			var searchResult = list.Substring(i, j - i);
+
+			// Format unescaped URLs (& --> &amp;)
+			searchResult = new Regex("href=\"javascript:DisplayWindow\\(([^\"]+),'1'\\);\"").Replace(searchResult,
+				(MatchEvaluator)(x => "href=\"" + x.Groups[1].Value.Replace("&", "&amp;").Replace("&amp;amp;", "&amp;") + "\""));
+
+			// Format unclosed tags.
+			searchResult = new Regex("\\<((br|img|input)([^\\>]*[^/])?)\\>").Replace(searchResult,
+				(MatchEvaluator)(x => string.Format("<{0}/>", x.Groups[1].Value)));
+
+			// Why the heck OPAC generates such a bad-mannered HTML!?
+			// Who implemeneted that system??
+
+			// Parse as an XML document and process the useful part into ItemRecord.
+			return XDocument.Parse(searchResult).Element("div").Elements("table")
+				.Select(x => processor(x.Element("tr").Elements("td").ToArray())).ToArray();
+		}
+
+		static ItemRecord ProcessOpacItem(XElement[] item)
+		{
+			var data = item[0].Elements("input").Select(x => x.Attribute("value").Value).ToArray();
+			var bibid = data[0];
+			var type = int.Parse(data[1]);
+			var title = ProcessLinkName(item[2].Element("span"));
+			var other = new List<Tuple<string, string>>();
+			foreach (var elem in item[2].Elements("div").Where(x => x.Attribute("class").Value == "other").First().Nodes())
+			{
+				if (elem is XText) other.Add(new Tuple<string, string>(((XText)elem).Value, null));
+				else if (elem is XElement)
+				{
+					var proc = ProcessLinkName((XElement)elem);
+					other.Add(new Tuple<string, string>(proc.Item1, proc.Item2 != null ? proc.Item2.BibID : null));
+				}
+			}
+
+			return new ItemRecord
+			{
+				Type = (FileType)type,
+				Name = title.Item1,
+				URL = title.Item2 != null ? title.Item2.URL : null,
+				Other = other.ToArray(),
+				BibID = bibid,
+				NCID = null
+			};
+		}
+
+		static ItemRecord ProcessWebcatItem(XElement[] item)
+		{
+			var title = ProcessLinkName(item[2].Element("span"));
+			return new ItemRecord
+			{
+				Type = item[1].Value != "雑誌" ? item[1].Value != "図書" ? FileType.Unknown : FileType.Book : FileType.Magazine,
+				Name = title.Item1,
+				URL = null,
+				Other = new[] { new Tuple<string, string>(item[2].Element("div").Value, null) },
+				BibID = null,
+				NCID = title.Item2.NCID
+			};
+		}
+
+		static Tuple<string, ItemRecord> ProcessLinkName(XElement span)
+		{
+			try
+			{
+				var link = span.Element("a");
+				var href = link.Attribute("href").Value;
+				var text = link.Element("strong").Value;
+
+				if (href.StartsWith("'/opac/opac_details.cgi?"))
+				{
+					var i = href.IndexOf("&bibid=");
+					if (i != -1)
+					{
+						i += "&bibid=".Length;
+						var record = new ItemRecord { BibID = href.Substring(i, href.IndexOf('&', i) - i) };
+						return new Tuple<string, ItemRecord>(text, record);
+					}
+					i = href.IndexOf("&ncid=");
+					if (i != -1)
+					{
+						i += "&ncid=".Length;
+						var record = new ItemRecord { NCID = href.Substring(i, href.IndexOf('&', i) - i) };
+						return new Tuple<string, ItemRecord>(text, record);
+					}
+					return new Tuple<string, ItemRecord>(text, null);
+				}
+				else if (href.StartsWith("'http://vs2ga4mq9g"))
+				{
+					var url = href.Substring(1, href.IndexOf('\'', "'http://vs2ga4mq9g".Length) - 1);
+					if (href.Contains("encodeURIComponent")) url += HttpUtility.UrlEncode(text);
+					return new Tuple<string, ItemRecord>(text, new ItemRecord { URL = url });
+				}
+				else throw new NotImplementedException();
+			}
+			catch { return new Tuple<string, ItemRecord>(span.Value, null); }
+		}
+
+		static string DownloadUTF8(string url)
+		{
+			try
+			{
+				var c = new WebClient();
+				return Encoding.UTF8.GetString(c.DownloadData(url));
+			}
+			catch (WebException exp) { throw new ApplicationException("OPAC に接続中にエラーが発生しました。ネットワークに関係する問題が発生しています。", exp); }
+		}
+
+		public static Tuple<List<Tuple<string, string>>, List<Dictionary<string, string>>> ExtractDataByDetailPage(ItemRecord bookID)
+		{
+			string lookupURL;
+			if (bookID.BibID != null) lookupURL = string.Format(lookupBibid, bookID.BibID);
+			else if (bookID.NCID != null) lookupURL = string.Format(lookupNcid, bookID.NCID);
+			else throw new ArgumentException("bookID");
+			var detailPage = DownloadUTF8(lookupURL);
+
+			// Start to get the detail.
+			var detail = new List<Tuple<string, string>>();
+
+			int i, j;
+			// Obtain the book title.
+			i = detailPage.IndexOf(bookDetailTitleBegin) + bookDetailTitleBegin.Length;
+			var title = detailPage.Substring(i, detailPage.IndexOf(bookDetailTitleEnd, i) - i);
+			detail.Add(new Tuple<string, string>("Title", title));
+
+			// Obtain each detail field of the book.
+			while ((j = detailPage.IndexOf(bookDetailEntryBegin, i)) != -1)
+			{
+				i = detailPage.IndexOf(bookDetailEntryType1, j + bookDetailEntryBegin.Length);
+				i = detailPage.IndexOf(bookDetailEntryType2, i) + bookDetailEntryType2.Length;
+				j = detailPage.IndexOf(bookDetailEntryValue, i);
+				var type = detailPage.Substring(i, j - i);
+				j += bookDetailEntryValue.Length;
+				i = detailPage.IndexOf(bookDetailEntryEnd, j);
+				var value = detailPage.Substring(j, i - j);
+				detail.Add(new Tuple<string, string>(type, value));
+			}
+
+			// If the book is stored at UT Library, get the location list.
+			var collectionList = new List<Dictionary<string, string>>();
+			while ((i = detailPage.IndexOf(libraryEntryBegin, i)) != -1)
+			{
+				j = detailPage.IndexOf(libraryEntryEnd, i += libraryEntryBegin.Length);
+				var doc = XDocument.Parse("<A>" + detailPage.Substring(i, j - i) + "</A>");
+
+				var book = new Dictionary<string, string>();
+				foreach (var elem in doc.Descendants("td"))
+				{
+					var fieldName = elem.Attribute("class").Value;
+					string fieldValue = null;
+					var link = elem.Element("a");
+					if (link != null) fieldValue = link.Value;
+					else if (elem.Element("br") == null) fieldValue = elem.Value;
+					book.Add(fieldName, fieldValue);
+				}
+				collectionList.Add(book);
+			}
+
+			return new Tuple<List<Tuple<string, string>>, List<Dictionary<string, string>>>(detail, collectionList);
 		}
 
 		public static string ValidateISBN(string code)

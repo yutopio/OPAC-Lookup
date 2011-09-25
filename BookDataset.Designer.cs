@@ -238,15 +238,15 @@ namespace OpacLookup {
             base.Tables.Add(this.tableLibraryCollection);
             global::System.Data.ForeignKeyConstraint fkc;
             fkc = new global::System.Data.ForeignKeyConstraint("Books_LibraryCollection", new global::System.Data.DataColumn[] {
-                        this.tableBooks.IDColumn}, new global::System.Data.DataColumn[] {
-                        this.tableLibraryCollection.BookIDColumn});
+                        this.tableBooks.QueryIDColumn}, new global::System.Data.DataColumn[] {
+                        this.tableLibraryCollection.QueryIDColumn});
             this.tableLibraryCollection.Constraints.Add(fkc);
-            fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.None;
+            fkc.AcceptRejectRule = global::System.Data.AcceptRejectRule.Cascade;
             fkc.DeleteRule = global::System.Data.Rule.Cascade;
             fkc.UpdateRule = global::System.Data.Rule.Cascade;
             this.relationBooks_LibraryCollection = new global::System.Data.DataRelation("Books_LibraryCollection", new global::System.Data.DataColumn[] {
-                        this.tableBooks.IDColumn}, new global::System.Data.DataColumn[] {
-                        this.tableLibraryCollection.BookIDColumn}, false);
+                        this.tableBooks.QueryIDColumn}, new global::System.Data.DataColumn[] {
+                        this.tableLibraryCollection.QueryIDColumn}, false);
             this.Relations.Add(this.relationBooks_LibraryCollection);
         }
         
@@ -317,6 +317,12 @@ namespace OpacLookup {
             return type;
         }
         
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public delegate void BooksRowChangeEventHandler(object sender, BooksRowChangeEvent e);
+        
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public delegate void LibraryCollectionRowChangeEventHandler(object sender, LibraryCollectionRowChangeEvent e);
+        
         /// <summary>
         ///Represents the strongly named DataTable class.
         ///</summary>
@@ -324,13 +330,15 @@ namespace OpacLookup {
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
         public partial class BooksDataTable : global::System.Data.TypedTableBase<BooksRow> {
             
-            private global::System.Data.DataColumn columnID;
+            private global::System.Data.DataColumn columnQueryID;
             
             private global::System.Data.DataColumn columnOutput;
             
             private global::System.Data.DataColumn columnISBN;
             
             private global::System.Data.DataColumn columnISBNInternal;
+            
+            private global::System.Data.DataColumn columnBarcode;
             
             private global::System.Data.DataColumn columnTitle;
             
@@ -383,9 +391,9 @@ namespace OpacLookup {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn IDColumn {
+            public global::System.Data.DataColumn QueryIDColumn {
                 get {
-                    return this.columnID;
+                    return this.columnQueryID;
                 }
             }
             
@@ -410,6 +418,14 @@ namespace OpacLookup {
             public global::System.Data.DataColumn ISBNInternalColumn {
                 get {
                     return this.columnISBNInternal;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn BarcodeColumn {
+                get {
+                    return this.columnBarcode;
                 }
             }
             
@@ -494,6 +510,18 @@ namespace OpacLookup {
                 }
             }
             
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event BooksRowChangeEventHandler BooksRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event BooksRowChangeEventHandler BooksRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event BooksRowChangeEventHandler BooksRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event BooksRowChangeEventHandler BooksRowDeleted;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void AddBooksRow(BooksRow row) {
@@ -502,13 +530,14 @@ namespace OpacLookup {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public BooksRow AddBooksRow(bool Output, string ISBN, string ISBNInternal, string Title, string Edition, string PublishDate, string Language, string CallNo, string Library, string BibID, string NCID) {
+            public BooksRow AddBooksRow(bool Output, string ISBN, string ISBNInternal, string Barcode, string Title, string Edition, string PublishDate, string Language, string CallNo, string Library, string BibID, string NCID) {
                 BooksRow rowBooksRow = ((BooksRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
                         Output,
                         ISBN,
                         ISBNInternal,
+                        Barcode,
                         Title,
                         Edition,
                         PublishDate,
@@ -524,9 +553,9 @@ namespace OpacLookup {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public BooksRow FindByID(int ID) {
+            public BooksRow FindByQueryID(int QueryID) {
                 return ((BooksRow)(this.Rows.Find(new object[] {
-                            ID})));
+                            QueryID})));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -546,10 +575,11 @@ namespace OpacLookup {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
-                this.columnID = base.Columns["ID"];
+                this.columnQueryID = base.Columns["QueryID"];
                 this.columnOutput = base.Columns["Output"];
                 this.columnISBN = base.Columns["ISBN"];
                 this.columnISBNInternal = base.Columns["ISBNInternal"];
+                this.columnBarcode = base.Columns["Barcode"];
                 this.columnTitle = base.Columns["Title"];
                 this.columnEdition = base.Columns["Edition"];
                 this.columnPublishDate = base.Columns["PublishDate"];
@@ -563,14 +593,16 @@ namespace OpacLookup {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             private void InitClass() {
-                this.columnID = new global::System.Data.DataColumn("ID", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnID);
+                this.columnQueryID = new global::System.Data.DataColumn("QueryID", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnQueryID);
                 this.columnOutput = new global::System.Data.DataColumn("Output", typeof(bool), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnOutput);
                 this.columnISBN = new global::System.Data.DataColumn("ISBN", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnISBN);
                 this.columnISBNInternal = new global::System.Data.DataColumn("ISBNInternal", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnISBNInternal);
+                this.columnBarcode = new global::System.Data.DataColumn("Barcode", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnBarcode);
                 this.columnTitle = new global::System.Data.DataColumn("Title", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTitle);
                 this.columnEdition = new global::System.Data.DataColumn("Edition", typeof(string), null, global::System.Data.MappingType.Element);
@@ -588,11 +620,11 @@ namespace OpacLookup {
                 this.columnNCID = new global::System.Data.DataColumn("NCID", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnNCID);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint2", new global::System.Data.DataColumn[] {
-                                this.columnID}, true));
-                this.columnID.AutoIncrement = true;
-                this.columnID.AllowDBNull = false;
-                this.columnID.ReadOnly = true;
-                this.columnID.Unique = true;
+                                this.columnQueryID}, true));
+                this.columnQueryID.AutoIncrement = true;
+                this.columnQueryID.AllowDBNull = false;
+                this.columnQueryID.ReadOnly = true;
+                this.columnQueryID.Unique = true;
                 this.columnOutput.AllowDBNull = false;
                 this.columnOutput.DefaultValue = ((bool)(false));
                 this.columnISBN.DefaultValue = ((string)(""));
@@ -615,6 +647,42 @@ namespace OpacLookup {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Type GetRowType() {
                 return typeof(BooksRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.BooksRowChanged != null)) {
+                    this.BooksRowChanged(this, new BooksRowChangeEvent(((BooksRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.BooksRowChanging != null)) {
+                    this.BooksRowChanging(this, new BooksRowChangeEvent(((BooksRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.BooksRowDeleted != null)) {
+                    this.BooksRowDeleted(this, new BooksRowChangeEvent(((BooksRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.BooksRowDeleting != null)) {
+                    this.BooksRowDeleting(this, new BooksRowChangeEvent(((BooksRow)(e.Row)), e.Action));
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -694,7 +762,9 @@ namespace OpacLookup {
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
         public partial class LibraryCollectionDataTable : global::System.Data.TypedTableBase<LibraryCollectionRow> {
             
-            private global::System.Data.DataColumn columnBookID;
+            private global::System.Data.DataColumn columnRecordID;
+            
+            private global::System.Data.DataColumn columnQueryID;
             
             private global::System.Data.DataColumn columnLocation;
             
@@ -749,9 +819,17 @@ namespace OpacLookup {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public global::System.Data.DataColumn BookIDColumn {
+            public global::System.Data.DataColumn RecordIDColumn {
                 get {
-                    return this.columnBookID;
+                    return this.columnRecordID;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn QueryIDColumn {
+                get {
+                    return this.columnQueryID;
                 }
             }
             
@@ -844,6 +922,18 @@ namespace OpacLookup {
                 }
             }
             
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event LibraryCollectionRowChangeEventHandler LibraryCollectionRowChanging;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event LibraryCollectionRowChangeEventHandler LibraryCollectionRowChanged;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event LibraryCollectionRowChangeEventHandler LibraryCollectionRowDeleting;
+            
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public event LibraryCollectionRowChangeEventHandler LibraryCollectionRowDeleted;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void AddLibraryCollectionRow(LibraryCollectionRow row) {
@@ -856,6 +946,7 @@ namespace OpacLookup {
                 LibraryCollectionRow rowLibraryCollectionRow = ((LibraryCollectionRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         null,
+                        null,
                         Location,
                         Volume,
                         CallNo,
@@ -866,7 +957,7 @@ namespace OpacLookup {
                         ISBN,
                         Comments};
                 if ((parentBooksRowByBooks_LibraryCollection != null)) {
-                    columnValuesArray[0] = parentBooksRowByBooks_LibraryCollection[0];
+                    columnValuesArray[1] = parentBooksRowByBooks_LibraryCollection[0];
                 }
                 rowLibraryCollectionRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowLibraryCollectionRow);
@@ -875,9 +966,9 @@ namespace OpacLookup {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public LibraryCollectionRow FindByBarcode(string Barcode) {
+            public LibraryCollectionRow FindByRecordID(int RecordID) {
                 return ((LibraryCollectionRow)(this.Rows.Find(new object[] {
-                            Barcode})));
+                            RecordID})));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -897,7 +988,8 @@ namespace OpacLookup {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
-                this.columnBookID = base.Columns["BookID"];
+                this.columnRecordID = base.Columns["RecordID"];
+                this.columnQueryID = base.Columns["QueryID"];
                 this.columnLocation = base.Columns["Location"];
                 this.columnVolume = base.Columns["Volume"];
                 this.columnCallNo = base.Columns["CallNo"];
@@ -912,8 +1004,10 @@ namespace OpacLookup {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             private void InitClass() {
-                this.columnBookID = new global::System.Data.DataColumn("BookID", typeof(int), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnBookID);
+                this.columnRecordID = new global::System.Data.DataColumn("RecordID", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnRecordID);
+                this.columnQueryID = new global::System.Data.DataColumn("QueryID", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnQueryID);
                 this.columnLocation = new global::System.Data.DataColumn("Location", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLocation);
                 this.columnVolume = new global::System.Data.DataColumn("Volume", typeof(string), null, global::System.Data.MappingType.Element);
@@ -933,9 +1027,11 @@ namespace OpacLookup {
                 this.columnComments = new global::System.Data.DataColumn("Comments", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnComments);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
-                                this.columnBarcode}, true));
-                this.columnBarcode.AllowDBNull = false;
-                this.columnBarcode.Unique = true;
+                                this.columnRecordID}, true));
+                this.columnRecordID.AutoIncrement = true;
+                this.columnRecordID.AllowDBNull = false;
+                this.columnRecordID.Unique = true;
+                this.columnQueryID.AllowDBNull = false;
                 this.Locale = new global::System.Globalization.CultureInfo("");
             }
             
@@ -955,6 +1051,42 @@ namespace OpacLookup {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             protected override global::System.Type GetRowType() {
                 return typeof(LibraryCollectionRow);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanged(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.LibraryCollectionRowChanged != null)) {
+                    this.LibraryCollectionRowChanged(this, new LibraryCollectionRowChangeEvent(((LibraryCollectionRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowChanging(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.LibraryCollectionRowChanging != null)) {
+                    this.LibraryCollectionRowChanging(this, new LibraryCollectionRowChangeEvent(((LibraryCollectionRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleted(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.LibraryCollectionRowDeleted != null)) {
+                    this.LibraryCollectionRowDeleted(this, new LibraryCollectionRowChangeEvent(((LibraryCollectionRow)(e.Row)), e.Action));
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            protected override void OnRowDeleting(global::System.Data.DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.LibraryCollectionRowDeleting != null)) {
+                    this.LibraryCollectionRowDeleting(this, new LibraryCollectionRowChangeEvent(((LibraryCollectionRow)(e.Row)), e.Action));
+                }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1043,12 +1175,12 @@ namespace OpacLookup {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int ID {
+            public int QueryID {
                 get {
-                    return ((int)(this[this.tableBooks.IDColumn]));
+                    return ((int)(this[this.tableBooks.QueryIDColumn]));
                 }
                 set {
-                    this[this.tableBooks.IDColumn] = value;
+                    this[this.tableBooks.QueryIDColumn] = value;
                 }
             }
             
@@ -1092,6 +1224,22 @@ namespace OpacLookup {
                 }
                 set {
                     this[this.tableBooks.ISBNInternalColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Barcode {
+                get {
+                    try {
+                        return ((string)(this[this.tableBooks.BarcodeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Barcode\' in table \'Books\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableBooks.BarcodeColumn] = value;
                 }
             }
             
@@ -1249,6 +1397,18 @@ namespace OpacLookup {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsBarcodeNull() {
+                return this.IsNull(this.tableBooks.BarcodeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetBarcodeNull() {
+                this[this.tableBooks.BarcodeColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsTitleNull() {
                 return this.IsNull(this.tableBooks.TitleColumn);
             }
@@ -1371,17 +1531,23 @@ namespace OpacLookup {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public int BookID {
+            public int RecordID {
                 get {
-                    try {
-                        return ((int)(this[this.tableLibraryCollection.BookIDColumn]));
-                    }
-                    catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'BookID\' in table \'LibraryCollection\' is DBNull.", e);
-                    }
+                    return ((int)(this[this.tableLibraryCollection.RecordIDColumn]));
                 }
                 set {
-                    this[this.tableLibraryCollection.BookIDColumn] = value;
+                    this[this.tableLibraryCollection.RecordIDColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public int QueryID {
+                get {
+                    return ((int)(this[this.tableLibraryCollection.QueryIDColumn]));
+                }
+                set {
+                    this[this.tableLibraryCollection.QueryIDColumn] = value;
                 }
             }
             
@@ -1437,7 +1603,12 @@ namespace OpacLookup {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string Barcode {
                 get {
-                    return ((string)(this[this.tableLibraryCollection.BarcodeColumn]));
+                    try {
+                        return ((string)(this[this.tableLibraryCollection.BarcodeColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Barcode\' in table \'LibraryCollection\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableLibraryCollection.BarcodeColumn] = value;
@@ -1537,18 +1708,6 @@ namespace OpacLookup {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public bool IsBookIDNull() {
-                return this.IsNull(this.tableLibraryCollection.BookIDColumn);
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public void SetBookIDNull() {
-                this[this.tableLibraryCollection.BookIDColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsLocationNull() {
                 return this.IsNull(this.tableLibraryCollection.LocationColumn);
             }
@@ -1581,6 +1740,18 @@ namespace OpacLookup {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetCallNoNull() {
                 this[this.tableLibraryCollection.CallNoColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsBarcodeNull() {
+                return this.IsNull(this.tableLibraryCollection.BarcodeColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetBarcodeNull() {
+                this[this.tableLibraryCollection.BarcodeColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1641,6 +1812,74 @@ namespace OpacLookup {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetCommentsNull() {
                 this[this.tableLibraryCollection.CommentsColumn] = global::System.Convert.DBNull;
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public class BooksRowChangeEvent : global::System.EventArgs {
+            
+            private BooksRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public BooksRowChangeEvent(BooksRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public BooksRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        /// <summary>
+        ///Row event argument class
+        ///</summary>
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        public class LibraryCollectionRowChangeEvent : global::System.EventArgs {
+            
+            private LibraryCollectionRow eventRow;
+            
+            private global::System.Data.DataRowAction eventAction;
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public LibraryCollectionRowChangeEvent(LibraryCollectionRow row, global::System.Data.DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public LibraryCollectionRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
             }
         }
     }
