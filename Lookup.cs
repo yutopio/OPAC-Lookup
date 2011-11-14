@@ -281,7 +281,7 @@ namespace OpacLookup
 			return code;
 		}
 
-		public static void AnalyzeCodeString(string codes, out string BibID, out string NCID)
+		public static void AnalyzeCodeString(string codes, out string BibID, out string NCID, out string ISBN)
 		{
 			try
 			{
@@ -291,11 +291,19 @@ namespace OpacLookup
 				{
 					BibID = null;
 					NCID = nodes[1].ToString();
+					ISBN = null;
+				}
+				else if (nodes.Length != 7)
+				{
+					BibID = nodes[1].ToString();
+					NCID = nodes[3].ToString();
+					ISBN = null;
 				}
 				else
 				{
 					BibID = nodes[1].ToString();
 					NCID = nodes[3].ToString();
+					ISBN = nodes[6].ToString();
 				}
 			}
 			catch (Exception exp) { throw new ApplicationException("書誌 ID および NCID の取得中にエラーが発生しました。", exp); }

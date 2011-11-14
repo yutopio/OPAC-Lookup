@@ -187,7 +187,7 @@ namespace OpacLookup
 							detail.Add(field.Item1, field.Item2);
 
 					// Analyze the codes.
-					Lookup.AnalyzeCodeString(detail["CODES"], out bibid, out ncid);
+					Lookup.AnalyzeCodeString(detail["CODES"], out bibid, out ncid, out ISBN);
 
 					// Add the library collection.
 					var collectionCount = 0;
@@ -201,9 +201,15 @@ namespace OpacLookup
 						// Add to the data table.
 						lock (rowLock)
 							this.bookDataset.LibraryCollection.AddLibraryCollectionRow(row,
-								collection["LOCATION"], collection["VOLUME"], collection["CALLNO"],
-								collection["BARCODE"], collection["CONDITION"], collection["RESTRICTION"],
-								collection["YEAR"], collection["ISBN"], collection["COMMENTS"]);
+								collection.ContainsKey("LOCATION") ? collection["LOCATION"] : "",
+								collection.ContainsKey("VOLUME") ? collection["VOLUME"] : "",
+								collection.ContainsKey("CALLNO") ? collection["CALLNO"] : "",
+								collection.ContainsKey("BARCODE") ? collection["BARCODE"] : "",
+								collection.ContainsKey("CONDITION") ? collection["CONDITION"] : "",
+								collection.ContainsKey("RESTRICTION") ? collection["RESTRICTION"] : "",
+								collection.ContainsKey("YEAR") ? collection["YEAR"] : "",
+								ISBN,
+								collection.ContainsKey("COMMENTS") ? collection["COMMENTS"] : "");
 						collectionCount++;
 						if (!callNoList.Contains(collection["CALLNO"])) callNoList.Add(collection["CALLNO"]);
 					}
