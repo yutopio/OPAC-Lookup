@@ -21,11 +21,9 @@
               <xs:element name="ISBNInternal" msprop:Generator_ColumnVarNameInTable="columnISBNInternal" msprop:Generator_ColumnPropNameInRow="ISBNInternal" msprop:Generator_ColumnPropNameInTable="ISBNInternalColumn" msprop:Generator_UserColumnName="ISBNInternal" type="xs:string" minOccurs="0" />
               <xs:element name="Barcode" msprop:Generator_ColumnVarNameInTable="columnBarcode" msprop:Generator_ColumnPropNameInRow="Barcode" msprop:Generator_ColumnPropNameInTable="BarcodeColumn" msprop:Generator_UserColumnName="Barcode" type="xs:string" minOccurs="0" />
               <xs:element name="Title" msprop:Generator_ColumnVarNameInTable="columnTitle" msprop:Generator_ColumnPropNameInRow="Title" msprop:Generator_ColumnPropNameInTable="TitleColumn" msprop:Generator_UserColumnName="Title" type="xs:string" minOccurs="0" />
-              <xs:element name="Edition" msprop:Generator_ColumnVarNameInTable="columnEdition" msprop:Generator_ColumnPropNameInRow="Edition" msprop:Generator_ColumnPropNameInTable="EditionColumn" msprop:Generator_UserColumnName="Edition" type="xs:string" minOccurs="0" />
-              <xs:element name="PublishDate" msprop:Generator_ColumnVarNameInTable="columnPublishDate" msprop:Generator_ColumnPropNameInRow="PublishDate" msprop:Generator_ColumnPropNameInTable="PublishDateColumn" msprop:Generator_UserColumnName="PublishDate" type="xs:string" minOccurs="0" />
-              <xs:element name="Language" msprop:Generator_ColumnVarNameInTable="columnLanguage" msprop:Generator_ColumnPropNameInRow="Language" msprop:Generator_ColumnPropNameInTable="LanguageColumn" msprop:Generator_UserColumnName="Language" type="xs:string" minOccurs="0" />
-              <xs:element name="CallNo" msprop:Generator_ColumnVarNameInTable="columnCallNo" msprop:Generator_ColumnPropNameInRow="CallNo" msprop:Generator_ColumnPropNameInTable="CallNoColumn" msprop:Generator_UserColumnName="CallNo" type="xs:string" minOccurs="0" />
+              <xs:element name="EngLibrary" msprop:Generator_ColumnVarNameInTable="columnEngLibrary" msprop:Generator_ColumnPropNameInRow="EngLibrary" msprop:Generator_ColumnPropNameInTable="EngLibraryColumn" msprop:Generator_UserColumnName="EngLibrary" type="xs:string" minOccurs="0" />
               <xs:element name="Library" msprop:Generator_ColumnVarNameInTable="columnLibrary" msprop:Generator_ColumnPropNameInRow="Library" msprop:Generator_ColumnPropNameInTable="LibraryColumn" msprop:Generator_UserColumnName="Library" type="xs:string" minOccurs="0" />
+              <xs:element name="NII" msprop:Generator_ColumnVarNameInTable="columnNII" msprop:Generator_ColumnPropNameInRow="NII" msprop:Generator_ColumnPropNameInTable="NIIColumn" msprop:Generator_UserColumnName="NII" type="xs:string" minOccurs="0" />
               <xs:element name="BibID" msprop:Generator_ColumnVarNameInTable="columnBibID" msprop:Generator_ColumnPropNameInRow="BibID" msprop:Generator_ColumnPropNameInTable="BibIDColumn" msprop:Generator_UserColumnName="BibID" type="xs:string" minOccurs="0" />
               <xs:element name="NCID" msprop:Generator_ColumnVarNameInTable="columnNCID" msprop:Generator_ColumnPropNameInRow="NCID" msprop:Generator_ColumnPropNameInTable="NCIDColumn" msprop:Generator_UserColumnName="NCID" type="xs:string" minOccurs="0" />
             </xs:sequence>
@@ -48,6 +46,23 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="CiNiiBooks" msprop:Generator_TableClassName="CiNiiBooksDataTable" msprop:Generator_TableVarName="tableCiNiiBooks" msprop:Generator_TablePropName="CiNiiBooks" msprop:Generator_RowDeletingName="CiNiiBooksRowDeleting" msprop:Generator_UserTableName="CiNiiBooks" msprop:Generator_RowChangingName="CiNiiBooksRowChanging" msprop:Generator_RowEvHandlerName="CiNiiBooksRowChangeEventHandler" msprop:Generator_RowDeletedName="CiNiiBooksRowDeleted" msprop:Generator_RowEvArgName="CiNiiBooksRowChangeEvent" msprop:Generator_RowChangedName="CiNiiBooksRowChanged" msprop:Generator_RowClassName="CiNiiBooksRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="OrganizationCode" msprop:Generator_ColumnVarNameInTable="columnOrganizationCode" msprop:Generator_ColumnPropNameInRow="OrganizationCode" msprop:Generator_ColumnPropNameInTable="OrganizationCodeColumn" msprop:Generator_UserColumnName="OrganizationCode" type="xs:string" />
+              <xs:element name="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" msprop:Generator_UserColumnName="Name" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Owners" msprop:Generator_TableClassName="OwnersDataTable" msprop:Generator_TableVarName="tableOwners" msprop:Generator_TablePropName="Owners" msprop:Generator_RowDeletingName="OwnersRowDeleting" msprop:Generator_UserTableName="Owners" msprop:Generator_RowChangingName="OwnersRowChanging" msprop:Generator_RowEvHandlerName="OwnersRowChangeEventHandler" msprop:Generator_RowDeletedName="OwnersRowDeleted" msprop:Generator_RowEvArgName="OwnersRowChangeEvent" msprop:Generator_RowChangedName="OwnersRowChanged" msprop:Generator_RowClassName="OwnersRow">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="NCID" msprop:Generator_ColumnVarNameInTable="columnNCID" msprop:Generator_ColumnPropNameInRow="NCID" msprop:Generator_ColumnPropNameInTable="NCIDColumn" msprop:Generator_UserColumnName="NCID" type="xs:string" />
+              <xs:element name="Organization" msprop:Generator_ColumnVarNameInTable="columnOrganization" msprop:Generator_ColumnPropNameInRow="Organization" msprop:Generator_ColumnPropNameInTable="OrganizationColumn" msprop:Generator_UserColumnName="Organization" type="xs:string" />
+              <xs:element name="OpacUrl" msprop:Generator_ColumnVarNameInTable="columnOpacUrl" msprop:Generator_ColumnPropNameInRow="OpacUrl" msprop:Generator_ColumnPropNameInTable="OpacUrlColumn" msprop:Generator_UserColumnName="OpacUrl" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
       </xs:choice>
     </xs:complexType>
     <xs:unique name="Constraint2" msdata:PrimaryKey="true">
@@ -58,9 +73,23 @@
       <xs:selector xpath=".//mstns:LibraryCollection" />
       <xs:field xpath="mstns:RecordID" />
     </xs:unique>
-    <xs:keyref name="Books_LibraryCollection" refer="Constraint2" msprop:rel_Generator_UserChildTable="LibraryCollection" msprop:rel_Generator_ChildPropName="GetLibraryCollectionRows" msprop:rel_Generator_ParentPropName="BooksRow" msprop:rel_Generator_UserRelationName="Books_LibraryCollection" msprop:rel_Generator_RelationVarName="relationBooks_LibraryCollection" msprop:rel_Generator_UserParentTable="Books" msdata:AcceptRejectRule="Cascade">
+    <xs:unique name="CiNiiBooks_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:CiNiiBooks" />
+      <xs:field xpath="mstns:OrganizationCode" />
+    </xs:unique>
+    <xs:unique name="Owners_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:Owners" />
+      <xs:field xpath="mstns:NCID" />
+      <xs:field xpath="mstns:Organization" />
+    </xs:unique>
+    <xs:keyref name="Books_LibraryCollection" refer="Constraint2" msprop:rel_Generator_UserChildTable="LibraryCollection" msprop:rel_Generator_ChildPropName="GetLibraryCollectionRows" msprop:rel_Generator_UserParentTable="Books" msprop:rel_Generator_UserRelationName="Books_LibraryCollection" msprop:rel_Generator_RelationVarName="relationBooks_LibraryCollection" msprop:rel_Generator_ParentPropName="BooksRow" msdata:AcceptRejectRule="Cascade">
       <xs:selector xpath=".//mstns:LibraryCollection" />
       <xs:field xpath="mstns:QueryID" />
     </xs:keyref>
   </xs:element>
+  <xs:annotation>
+    <xs:appinfo>
+      <msdata:Relationship name="Owners_Books" msdata:parent="Owners" msdata:child="Books" msdata:parentkey="NCID" msdata:childkey="NCID" msprop:Generator_UserChildTable="Books" msprop:Generator_ChildPropName="GetBooksRows" msprop:Generator_ParentPropName="OwnersRow" msprop:Generator_UserRelationName="Owners_Books" msprop:Generator_RelationVarName="relationOwners_Books" msprop:Generator_UserParentTable="Owners" />
+    </xs:appinfo>
+  </xs:annotation>
 </xs:schema>

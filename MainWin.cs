@@ -90,11 +90,9 @@ namespace OpacLookup
 			row.Output = false;
 			row.ISBNInternal = row.ISBN = ISBN;
 			row.Title = "待機中";
-			row.Edition = null;
-			row.PublishDate = null;
-			row.Language = null;
-			row.CallNo = null;
+			row.EngLibrary = null;
 			row.Library = null;
+			row.NII = null;
 			row.BibID = null;
 			row.NCID = null;
 			row.EndEdit();
@@ -190,13 +188,12 @@ namespace OpacLookup
 					Lookup.AnalyzeCodeString(detail["CODES"], out bibid, out ncid, out ISBN);
 
 					// Add the library collection.
+					var engLib = 0;
 					var collectionCount = 0;
 					var callNoList = new List<string>();
 					foreach (var collection in result.Item2)
 					{
-						// Filter only to Engineer 2 Building Library.
-						//if (collection["LOCATION"] != "工2・図書室") continue;
-						//if (!collection["LOCATION"].Contains("工") && !collection["LOCATION"].Contains("総合図")) continue;
+						if (collection["LOCATION"].StartsWith("工") || collection["LOCATION"].Contains("CS")) engLib++;
 
 						// Add to the data table.
 						lock (rowLock)
@@ -222,12 +219,10 @@ namespace OpacLookup
 							row.BeginEdit();
 							row.Output = true;
 							row.Title = detail["Title"];
-							TrySetValue("ED", x => row.Edition = x);
-							TrySetValue("PUBDT", x => row.PublishDate = x);
-							TrySetValue("TXTL", x => row.Language = x);
-							if (callNoList.Count != 0) row.CallNo = callNoList[0];
-							if (callNoList.Count > 1) row.SetColumnError(this.bookDataset.Books.CallNoColumn, "複数の請求記号が存在します。");
+							if (engLib > 0) row.EngLibrary = engLib.ToString() + " 冊";
 							if (collectionCount > 0) row.Library = collectionCount.ToString() + " 冊";
+							row.NII = "---";	// TODO: Not Yet Implemented
+							
 							row.BibID = bibid;
 							row.NCID = ncid;
 						}
@@ -247,7 +242,7 @@ namespace OpacLookup
 
 		void booksDataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
 		{
-			if (e.ColumnIndex != 7) return;
+			if (e.ColumnIndex < 3 || e.ColumnIndex > 5) return;
 			var current = (BookDataset.BooksRow)((DataRowView)this.booksBindingSource.Current).Row;
 
 			var collectionWin = new CollectionWin(this.booksBindingSource);
@@ -306,13 +301,13 @@ namespace OpacLookup
 				var fs = this.saveFileDialog1.OpenFile();
 				sw = new StreamWriter(fs, Encoding.UTF8);
 
-				var header = "ISBN,タイトル,版,出版日,本文言語,請求記号,所蔵状況,書誌ID,NCID";
+				var header = "ISBN,タイトル,工2所蔵,東大所蔵,NII所蔵,書誌ID,NCID";
 				sw.WriteLine(csv ? header : header.Replace(',', '\t'));
 				foreach (var row in this.bookDataset.Books.Where(x => x.Output))
 					try
 					{
 						sw.WriteLine(string.Join(csv ? "," : "\t",
-							new[] { "ISBN", "Title", "Edition", "PublishDate", "Language", "CallNo", "Library", "BibID", "NCID" }
+							new[] { "ISBN", "Title", "EngLibrary", "Library", "NII", "BibID", "NCID" }
 							.Select(x => row[x]).Select(x => x == DBNull.Value ? null : ((string)x).Replace("\t", "").Replace("\"", "\"\""))
 							.Select(x => x == null ? "" : "\"" + x + "\"").ToArray()));
 					}

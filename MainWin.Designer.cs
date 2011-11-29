@@ -16,43 +16,41 @@ namespace OpacLookup
 
 		void InitializeComponent()
 		{
-			this.components = new Container();
-			ComponentResourceManager resources = new ComponentResourceManager(typeof(MainWin));
-			this.booksBindingNavigator = new BindingNavigator(this.components);
-			this.bindingNavigatorAddNewItem = new ToolStripButton();
-			this.booksBindingSource = new BindingSource(this.components);
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWin));
+			this.booksBindingNavigator = new System.Windows.Forms.BindingNavigator(this.components);
+			this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
+			this.booksBindingSource = new System.Windows.Forms.BindingSource(this.components);
 			this.bookDataset = new OpacLookup.BookDataset();
-			this.bindingNavigatorCountItem = new ToolStripLabel();
-			this.bindingNavigatorDeleteItem = new ToolStripButton();
-			this.bindingNavigatorMoveFirstItem = new ToolStripButton();
-			this.bindingNavigatorMovePreviousItem = new ToolStripButton();
-			this.bindingNavigatorSeparator = new ToolStripSeparator();
-			this.bindingNavigatorPositionItem = new ToolStripTextBox();
-			this.bindingNavigatorSeparator1 = new ToolStripSeparator();
-			this.bindingNavigatorMoveNextItem = new ToolStripButton();
-			this.bindingNavigatorMoveLastItem = new ToolStripButton();
-			this.bindingNavigatorSeparator2 = new ToolStripSeparator();
-			this.bindingNavigatorSeparator3 = new ToolStripSeparator();
-			this.booksBindingNavigatorOpenItem = new ToolStripButton();
-			this.booksBindingNavigatorSaveItem = new ToolStripButton();
-			this.booksDataGridView = new DataGridView();
-			this.saveFileDialog1 = new SaveFileDialog();
-			this.openFileDialog1 = new OpenFileDialog();
-			this.dataGridViewCheckBoxColumn1 = new DataGridViewCheckBoxColumn();
-			this.dataGridViewTextBoxColumn1 = new DataGridViewTextBoxColumn();
-			this.dataGridViewTextBoxColumn2 = new DataGridViewLinkColumn();
-			this.dataGridViewTextBoxColumn3 = new DataGridViewTextBoxColumn();
-			this.dataGridViewTextBoxColumn4 = new DataGridViewTextBoxColumn();
-			this.dataGridViewTextBoxColumn5 = new DataGridViewTextBoxColumn();
-			this.dataGridViewTextBoxColumn9 = new DataGridViewTextBoxColumn();
-			this.dataGridViewLinkColumn6 = new DataGridViewLinkColumn();
-			this.dataGridViewTextBoxColumn7 = new DataGridViewTextBoxColumn();
-			this.dataGridViewTextBoxColumn8 = new DataGridViewTextBoxColumn();
-			((ISupportInitialize)(this.booksBindingNavigator)).BeginInit();
+			this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
+			this.bindingNavigatorDeleteItem = new System.Windows.Forms.ToolStripButton();
+			this.bindingNavigatorMoveFirstItem = new System.Windows.Forms.ToolStripButton();
+			this.bindingNavigatorMovePreviousItem = new System.Windows.Forms.ToolStripButton();
+			this.bindingNavigatorSeparator = new System.Windows.Forms.ToolStripSeparator();
+			this.bindingNavigatorPositionItem = new System.Windows.Forms.ToolStripTextBox();
+			this.bindingNavigatorSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+			this.bindingNavigatorMoveNextItem = new System.Windows.Forms.ToolStripButton();
+			this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
+			this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+			this.bindingNavigatorSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.booksBindingNavigatorOpenItem = new System.Windows.Forms.ToolStripButton();
+			this.booksBindingNavigatorSaveItem = new System.Windows.Forms.ToolStripButton();
+			this.booksDataGridView = new System.Windows.Forms.DataGridView();
+			this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+			this.dataGridViewCheckBoxColumn1 = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+			this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.EngLibrary = new System.Windows.Forms.DataGridViewLinkColumn();
+			this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewLinkColumn();
+			this.NII = new System.Windows.Forms.DataGridViewLinkColumn();
+			this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			((System.ComponentModel.ISupportInitialize)(this.booksBindingNavigator)).BeginInit();
 			this.booksBindingNavigator.SuspendLayout();
-			((ISupportInitialize)(this.booksBindingSource)).BeginInit();
-			((ISupportInitialize)(this.bookDataset)).BeginInit();
-			((ISupportInitialize)(this.booksDataGridView)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.booksBindingSource)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.bookDataset)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.booksDataGridView)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// booksBindingNavigator
@@ -62,7 +60,7 @@ namespace OpacLookup
 			this.booksBindingNavigator.CountItem = this.bindingNavigatorCountItem;
 			this.booksBindingNavigator.CountItemFormat = "{0} 件のうち";
 			this.booksBindingNavigator.DeleteItem = this.bindingNavigatorDeleteItem;
-			this.booksBindingNavigator.Items.AddRange(new ToolStripItem[] {
+			this.booksBindingNavigator.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.bindingNavigatorMoveFirstItem,
             this.bindingNavigatorMovePreviousItem,
             this.bindingNavigatorSeparator,
@@ -77,24 +75,24 @@ namespace OpacLookup
             this.bindingNavigatorSeparator3,
             this.booksBindingNavigatorOpenItem,
             this.booksBindingNavigatorSaveItem});
-			this.booksBindingNavigator.Location = new Point(0, 0);
+			this.booksBindingNavigator.Location = new System.Drawing.Point(0, 0);
 			this.booksBindingNavigator.MoveFirstItem = this.bindingNavigatorMoveFirstItem;
 			this.booksBindingNavigator.MoveLastItem = this.bindingNavigatorMoveLastItem;
 			this.booksBindingNavigator.MoveNextItem = this.bindingNavigatorMoveNextItem;
 			this.booksBindingNavigator.MovePreviousItem = this.bindingNavigatorMovePreviousItem;
 			this.booksBindingNavigator.Name = "booksBindingNavigator";
 			this.booksBindingNavigator.PositionItem = this.bindingNavigatorPositionItem;
-			this.booksBindingNavigator.Size = new Size(1175, 25);
+			this.booksBindingNavigator.Size = new System.Drawing.Size(1043, 25);
 			this.booksBindingNavigator.TabIndex = 0;
 			this.booksBindingNavigator.Text = "bindingNavigator1";
 			// 
 			// bindingNavigatorAddNewItem
 			// 
-			this.bindingNavigatorAddNewItem.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.bindingNavigatorAddNewItem.Image = ((Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
+			this.bindingNavigatorAddNewItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.bindingNavigatorAddNewItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorAddNewItem.Image")));
 			this.bindingNavigatorAddNewItem.Name = "bindingNavigatorAddNewItem";
 			this.bindingNavigatorAddNewItem.RightToLeftAutoMirrorImage = true;
-			this.bindingNavigatorAddNewItem.Size = new Size(23, 22);
+			this.bindingNavigatorAddNewItem.Size = new System.Drawing.Size(23, 22);
 			this.bindingNavigatorAddNewItem.Text = "Add new";
 			// 
 			// booksBindingSource
@@ -112,127 +110,125 @@ namespace OpacLookup
 			// bindingNavigatorCountItem
 			// 
 			this.bindingNavigatorCountItem.Name = "bindingNavigatorCountItem";
-			this.bindingNavigatorCountItem.Size = new Size(64, 22);
+			this.bindingNavigatorCountItem.Size = new System.Drawing.Size(64, 22);
 			this.bindingNavigatorCountItem.Text = "{0} 件のうち";
 			this.bindingNavigatorCountItem.ToolTipText = "Total number of items";
 			// 
 			// bindingNavigatorDeleteItem
 			// 
-			this.bindingNavigatorDeleteItem.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.bindingNavigatorDeleteItem.Image = ((Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
+			this.bindingNavigatorDeleteItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.bindingNavigatorDeleteItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorDeleteItem.Image")));
 			this.bindingNavigatorDeleteItem.Name = "bindingNavigatorDeleteItem";
 			this.bindingNavigatorDeleteItem.RightToLeftAutoMirrorImage = true;
-			this.bindingNavigatorDeleteItem.Size = new Size(23, 22);
+			this.bindingNavigatorDeleteItem.Size = new System.Drawing.Size(23, 22);
 			this.bindingNavigatorDeleteItem.Text = "Delete";
 			// 
 			// bindingNavigatorMoveFirstItem
 			// 
-			this.bindingNavigatorMoveFirstItem.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.bindingNavigatorMoveFirstItem.Image = ((Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
+			this.bindingNavigatorMoveFirstItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.bindingNavigatorMoveFirstItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveFirstItem.Image")));
 			this.bindingNavigatorMoveFirstItem.Name = "bindingNavigatorMoveFirstItem";
 			this.bindingNavigatorMoveFirstItem.RightToLeftAutoMirrorImage = true;
-			this.bindingNavigatorMoveFirstItem.Size = new Size(23, 22);
+			this.bindingNavigatorMoveFirstItem.Size = new System.Drawing.Size(23, 22);
 			this.bindingNavigatorMoveFirstItem.Text = "Move first";
 			// 
 			// bindingNavigatorMovePreviousItem
 			// 
-			this.bindingNavigatorMovePreviousItem.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.bindingNavigatorMovePreviousItem.Image = ((Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
+			this.bindingNavigatorMovePreviousItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.bindingNavigatorMovePreviousItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMovePreviousItem.Image")));
 			this.bindingNavigatorMovePreviousItem.Name = "bindingNavigatorMovePreviousItem";
 			this.bindingNavigatorMovePreviousItem.RightToLeftAutoMirrorImage = true;
-			this.bindingNavigatorMovePreviousItem.Size = new Size(23, 22);
+			this.bindingNavigatorMovePreviousItem.Size = new System.Drawing.Size(23, 22);
 			this.bindingNavigatorMovePreviousItem.Text = "Move previous";
 			// 
 			// bindingNavigatorSeparator
 			// 
 			this.bindingNavigatorSeparator.Name = "bindingNavigatorSeparator";
-			this.bindingNavigatorSeparator.Size = new Size(6, 25);
+			this.bindingNavigatorSeparator.Size = new System.Drawing.Size(6, 25);
 			// 
 			// bindingNavigatorPositionItem
 			// 
 			this.bindingNavigatorPositionItem.AccessibleName = "Position";
 			this.bindingNavigatorPositionItem.AutoSize = false;
 			this.bindingNavigatorPositionItem.Name = "bindingNavigatorPositionItem";
-			this.bindingNavigatorPositionItem.Size = new Size(50, 21);
+			this.bindingNavigatorPositionItem.Size = new System.Drawing.Size(50, 21);
 			this.bindingNavigatorPositionItem.Text = "0";
 			this.bindingNavigatorPositionItem.ToolTipText = "Current position";
 			// 
 			// bindingNavigatorSeparator1
 			// 
 			this.bindingNavigatorSeparator1.Name = "bindingNavigatorSeparator1";
-			this.bindingNavigatorSeparator1.Size = new Size(6, 25);
+			this.bindingNavigatorSeparator1.Size = new System.Drawing.Size(6, 25);
 			// 
 			// bindingNavigatorMoveNextItem
 			// 
-			this.bindingNavigatorMoveNextItem.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.bindingNavigatorMoveNextItem.Image = ((Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
+			this.bindingNavigatorMoveNextItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.bindingNavigatorMoveNextItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveNextItem.Image")));
 			this.bindingNavigatorMoveNextItem.Name = "bindingNavigatorMoveNextItem";
 			this.bindingNavigatorMoveNextItem.RightToLeftAutoMirrorImage = true;
-			this.bindingNavigatorMoveNextItem.Size = new Size(23, 22);
+			this.bindingNavigatorMoveNextItem.Size = new System.Drawing.Size(23, 22);
 			this.bindingNavigatorMoveNextItem.Text = "Move next";
 			// 
 			// bindingNavigatorMoveLastItem
 			// 
-			this.bindingNavigatorMoveLastItem.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.bindingNavigatorMoveLastItem.Image = ((Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
+			this.bindingNavigatorMoveLastItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.bindingNavigatorMoveLastItem.Image = ((System.Drawing.Image)(resources.GetObject("bindingNavigatorMoveLastItem.Image")));
 			this.bindingNavigatorMoveLastItem.Name = "bindingNavigatorMoveLastItem";
 			this.bindingNavigatorMoveLastItem.RightToLeftAutoMirrorImage = true;
-			this.bindingNavigatorMoveLastItem.Size = new Size(23, 22);
+			this.bindingNavigatorMoveLastItem.Size = new System.Drawing.Size(23, 22);
 			this.bindingNavigatorMoveLastItem.Text = "Move last";
 			// 
 			// bindingNavigatorSeparator2
 			// 
 			this.bindingNavigatorSeparator2.Name = "bindingNavigatorSeparator2";
-			this.bindingNavigatorSeparator2.Size = new Size(6, 25);
+			this.bindingNavigatorSeparator2.Size = new System.Drawing.Size(6, 25);
 			// 
 			// bindingNavigatorSeparator3
 			// 
 			this.bindingNavigatorSeparator3.Name = "bindingNavigatorSeparator3";
-			this.bindingNavigatorSeparator3.Size = new Size(6, 25);
+			this.bindingNavigatorSeparator3.Size = new System.Drawing.Size(6, 25);
 			// 
 			// booksBindingNavigatorOpenItem
 			// 
-			this.booksBindingNavigatorOpenItem.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.booksBindingNavigatorOpenItem.Image = ((Image)(resources.GetObject("booksBindingNavigatorOpenItem.Image")));
-			this.booksBindingNavigatorOpenItem.ImageTransparentColor = Color.Magenta;
+			this.booksBindingNavigatorOpenItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.booksBindingNavigatorOpenItem.Image = ((System.Drawing.Image)(resources.GetObject("booksBindingNavigatorOpenItem.Image")));
+			this.booksBindingNavigatorOpenItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.booksBindingNavigatorOpenItem.Name = "booksBindingNavigatorOpenItem";
-			this.booksBindingNavigatorOpenItem.Size = new Size(23, 22);
+			this.booksBindingNavigatorOpenItem.Size = new System.Drawing.Size(23, 22);
 			this.booksBindingNavigatorOpenItem.Click += new System.EventHandler(this.booksBindingNavigatorOpenItem_Click);
 			// 
 			// booksBindingNavigatorSaveItem
 			// 
-			this.booksBindingNavigatorSaveItem.DisplayStyle = ToolStripItemDisplayStyle.Image;
-			this.booksBindingNavigatorSaveItem.Image = ((Image)(resources.GetObject("booksBindingNavigatorSaveItem.Image")));
+			this.booksBindingNavigatorSaveItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.booksBindingNavigatorSaveItem.Image = ((System.Drawing.Image)(resources.GetObject("booksBindingNavigatorSaveItem.Image")));
 			this.booksBindingNavigatorSaveItem.Name = "booksBindingNavigatorSaveItem";
-			this.booksBindingNavigatorSaveItem.Size = new Size(23, 22);
+			this.booksBindingNavigatorSaveItem.Size = new System.Drawing.Size(23, 22);
 			this.booksBindingNavigatorSaveItem.Text = "Save Data";
 			this.booksBindingNavigatorSaveItem.Click += new System.EventHandler(this.booksBindingNavigatorSaveItem_Click);
 			// 
 			// booksDataGridView
 			// 
-			this.booksDataGridView.Anchor = ((AnchorStyles)((((AnchorStyles.Top | AnchorStyles.Bottom)
-						| AnchorStyles.Left)
-						| AnchorStyles.Right)));
+			this.booksDataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.booksDataGridView.AutoGenerateColumns = false;
-			this.booksDataGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-			this.booksDataGridView.Columns.AddRange(new DataGridViewColumn[] {
+			this.booksDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+			this.booksDataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewCheckBoxColumn1,
             this.dataGridViewTextBoxColumn1,
             this.dataGridViewTextBoxColumn2,
-            this.dataGridViewTextBoxColumn3,
-            this.dataGridViewTextBoxColumn4,
-            this.dataGridViewTextBoxColumn5,
-            this.dataGridViewTextBoxColumn9,
-            this.dataGridViewLinkColumn6,
+            this.EngLibrary,
+            this.dataGridViewTextBoxColumn6,
+            this.NII,
             this.dataGridViewTextBoxColumn7,
             this.dataGridViewTextBoxColumn8});
 			this.booksDataGridView.DataSource = this.booksBindingSource;
-			this.booksDataGridView.Location = new Point(12, 28);
+			this.booksDataGridView.Location = new System.Drawing.Point(12, 28);
 			this.booksDataGridView.Name = "booksDataGridView";
-			this.booksDataGridView.Size = new Size(1151, 497);
+			this.booksDataGridView.Size = new System.Drawing.Size(1019, 376);
 			this.booksDataGridView.TabIndex = 1;
-			this.booksDataGridView.CellContentClick += new DataGridViewCellEventHandler(this.booksDataGridView_CellContentClick);
-			this.booksDataGridView.DataError += new DataGridViewDataErrorEventHandler(this.booksDataGridView_DataError);
+			this.booksDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.booksDataGridView_CellContentClick);
+			this.booksDataGridView.DataError += new System.Windows.Forms.DataGridViewDataErrorEventHandler(this.booksDataGridView_DataError);
 			// 
 			// saveFileDialog1
 			// 
@@ -262,56 +258,42 @@ namespace OpacLookup
 			// 
 			// dataGridViewTextBoxColumn2
 			// 
-			this.dataGridViewTextBoxColumn2.ActiveLinkColor = SystemColors.ControlText;
 			this.dataGridViewTextBoxColumn2.DataPropertyName = "Title";
 			this.dataGridViewTextBoxColumn2.HeaderText = "タイトル";
-			this.dataGridViewTextBoxColumn2.LinkColor = SystemColors.ControlText;
 			this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
 			this.dataGridViewTextBoxColumn2.ReadOnly = true;
-			this.dataGridViewTextBoxColumn2.Resizable = DataGridViewTriState.True;
-			this.dataGridViewTextBoxColumn2.SortMode = DataGridViewColumnSortMode.Automatic;
-			this.dataGridViewTextBoxColumn2.VisitedLinkColor = SystemColors.ControlText;
+			this.dataGridViewTextBoxColumn2.Resizable = System.Windows.Forms.DataGridViewTriState.True;
 			this.dataGridViewTextBoxColumn2.Width = 400;
 			// 
-			// dataGridViewTextBoxColumn3
+			// EngLibrary
 			// 
-			this.dataGridViewTextBoxColumn3.DataPropertyName = "Edition";
-			this.dataGridViewTextBoxColumn3.HeaderText = "版";
-			this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-			this.dataGridViewTextBoxColumn3.ReadOnly = true;
-			this.dataGridViewTextBoxColumn3.Width = 70;
+			this.EngLibrary.DataPropertyName = "EngLibrary";
+			this.EngLibrary.HeaderText = "工情所蔵";
+			this.EngLibrary.Name = "EngLibrary";
+			this.EngLibrary.ReadOnly = true;
+			this.EngLibrary.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			this.EngLibrary.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+			this.EngLibrary.Width = 80;
 			// 
-			// dataGridViewTextBoxColumn4
+			// dataGridViewTextBoxColumn6
 			// 
-			this.dataGridViewTextBoxColumn4.DataPropertyName = "PublishDate";
-			this.dataGridViewTextBoxColumn4.HeaderText = "出版日";
-			this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-			this.dataGridViewTextBoxColumn4.ReadOnly = true;
-			this.dataGridViewTextBoxColumn4.Width = 70;
+			this.dataGridViewTextBoxColumn6.DataPropertyName = "Library";
+			this.dataGridViewTextBoxColumn6.HeaderText = "東大所蔵";
+			this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
+			this.dataGridViewTextBoxColumn6.ReadOnly = true;
+			this.dataGridViewTextBoxColumn6.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			this.dataGridViewTextBoxColumn6.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+			this.dataGridViewTextBoxColumn6.Width = 80;
 			// 
-			// dataGridViewTextBoxColumn5
+			// NII
 			// 
-			this.dataGridViewTextBoxColumn5.DataPropertyName = "Language";
-			this.dataGridViewTextBoxColumn5.HeaderText = "本文言語";
-			this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-			this.dataGridViewTextBoxColumn5.ReadOnly = true;
-			this.dataGridViewTextBoxColumn5.Width = 80;
-			// 
-			// dataGridViewTextBoxColumn9
-			// 
-			this.dataGridViewTextBoxColumn9.DataPropertyName = "CallNo";
-			this.dataGridViewTextBoxColumn9.HeaderText = "請求記号";
-			this.dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
-			this.dataGridViewTextBoxColumn9.ReadOnly = true;
-			this.dataGridViewTextBoxColumn9.Width = 90;
-			// 
-			// dataGridViewLinkColumn6
-			// 
-			this.dataGridViewLinkColumn6.DataPropertyName = "Library";
-			this.dataGridViewLinkColumn6.HeaderText = "所蔵状況";
-			this.dataGridViewLinkColumn6.Name = "dataGridViewLinkColumn6";
-			this.dataGridViewLinkColumn6.ReadOnly = true;
-			this.dataGridViewLinkColumn6.Width = 70;
+			this.NII.DataPropertyName = "NII";
+			this.NII.HeaderText = "NII 登録";
+			this.NII.Name = "NII";
+			this.NII.ReadOnly = true;
+			this.NII.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+			this.NII.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+			this.NII.Width = 80;
 			// 
 			// dataGridViewTextBoxColumn7
 			// 
@@ -331,19 +313,19 @@ namespace OpacLookup
 			// 
 			// MainWin
 			// 
-			this.ClientSize = new Size(1175, 537);
+			this.ClientSize = new System.Drawing.Size(1043, 416);
 			this.Controls.Add(this.booksDataGridView);
 			this.Controls.Add(this.booksBindingNavigator);
-			this.Icon = ((Icon)(resources.GetObject("$this.Icon")));
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Name = "MainWin";
-			this.StartPosition = FormStartPosition.CenterScreen;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "OPAC Lookup";
-			((ISupportInitialize)(this.booksBindingNavigator)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.booksBindingNavigator)).EndInit();
 			this.booksBindingNavigator.ResumeLayout(false);
 			this.booksBindingNavigator.PerformLayout();
-			((ISupportInitialize)(this.booksBindingSource)).EndInit();
-			((ISupportInitialize)(this.bookDataset)).EndInit();
-			((ISupportInitialize)(this.booksDataGridView)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.booksBindingSource)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.bookDataset)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.booksDataGridView)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -371,12 +353,10 @@ namespace OpacLookup
 		OpenFileDialog openFileDialog1;
 		private DataGridViewCheckBoxColumn dataGridViewCheckBoxColumn1;
 		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-		private DataGridViewLinkColumn dataGridViewTextBoxColumn2;
-		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
-		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn5;
-		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn9;
-		private DataGridViewLinkColumn dataGridViewLinkColumn6;
+		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+		private DataGridViewLinkColumn EngLibrary;
+		private DataGridViewLinkColumn dataGridViewTextBoxColumn6;
+		private DataGridViewLinkColumn NII;
 		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn7;
 		private DataGridViewTextBoxColumn dataGridViewTextBoxColumn8;
 	}
