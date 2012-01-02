@@ -61,6 +61,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>BookDataset.xsd</DependentUpon>
     </Compile>
+    <Compile Include="CiNiiBooks.cs" />
     <Compile Include="CollectionWin.cs">
       <SubType>Form</SubType>
     </Compile>
