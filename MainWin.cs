@@ -163,8 +163,13 @@ namespace OpacLookup
 					string bibid, ncid;
 					try
 					{
-						var records = Lookup.SearchByISBN(ISBN);
+						var records = CiNiiBooks.SearchByISBN(ISBN);
 						if (records.Length != 1) throw new ApplicationException("複数件の書籍がヒットしました。");
+
+						var records2 = Lookup.SearchByISBN(records[0].URL = records[0].URL.Replace("&direct=1", ""));
+						if (records2.Length != 1) throw new ApplicationException("複数件の書籍がヒットしました。");
+
+						records[0].BibID = records2[0].BibID;
 						result = Lookup.ExtractDataByDetailPage(records[0]);
 					}
 					catch (ApplicationException exp)

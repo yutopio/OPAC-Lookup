@@ -22,6 +22,9 @@ namespace OpacLookup
 			// Obtain library fanos.
 		}
 
-		
+		public static Lookup.ItemRecord[] SearchByISBN(string ISBN)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
