@@ -59,10 +59,6 @@ namespace OpacLookup
 				var items = ObtainBookListOpac(string.Format(searchUT, ISBN));
 				if (items.Length != 0) return items;
 
-				// Then try look up by Webcat.
-				items = ObtainBookListWebcat(string.Format(searchWebcat, ISBN));
-				if (items.Length != 0) return items;
-
 				// Didn't find the book on UT or Webcat.
 				throw new ApplicationException("書籍が見つかりませんでした。");
 			}
@@ -70,16 +66,6 @@ namespace OpacLookup
 		}
 
 		public static ItemRecord[] ObtainBookListOpac(string url)
-		{
-			return ObtainBookListInternal(url, ProcessOpacItem);
-		}
-
-		public static ItemRecord[] ObtainBookListWebcat(string url)
-		{
-			return ObtainBookListInternal(url, ProcessWebcatItem);
-		}
-
-		static ItemRecord[] ObtainBookListInternal(string url, Func<XElement[], ItemRecord> processor)
 		{
 			// Download the search result page.
 			var list = DownloadUTF8(url);
@@ -104,7 +90,7 @@ namespace OpacLookup
 
 			// Parse as an XML document and process the useful part into ItemRecord.
 			return XDocument.Parse(searchResult).Element("div").Elements("table")
-				.Select(x => processor(x.Element("tr").Elements("td").ToArray())).ToArray();
+				.Select(x => ProcessOpacItem(x.Element("tr").Elements("td").ToArray())).ToArray();
 		}
 
 		static ItemRecord ProcessOpacItem(XElement[] item)
@@ -132,20 +118,6 @@ namespace OpacLookup
 				Other = other.ToArray(),
 				BibID = bibid,
 				NCID = null
-			};
-		}
-
-		static ItemRecord ProcessWebcatItem(XElement[] item)
-		{
-			var title = ProcessLinkName(item[2].Element("span"));
-			return new ItemRecord
-			{
-				Type = item[1].Value != "雑誌" ? item[1].Value != "図書" ? FileType.Unknown : FileType.Book : FileType.Magazine,
-				Name = title.Item1,
-				URL = null,
-				Other = new[] { new Tuple<string, string>(item[2].Element("div").Value, null) },
-				BibID = null,
-				NCID = title.Item2.NCID
 			};
 		}
 
