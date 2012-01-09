@@ -9,6 +9,26 @@ using System.Text.RegularExpressions;
 
 namespace OpacLookup
 {
+	public class ItemRecord
+	{
+		public FileType Type { get; set; }
+		public string Name { get; set; }
+		public string URL { get; set; }
+		public Tuple<string, string>[] Other { get; set; }
+		public string BibID { get; set; }
+		public string NCID { get; set; }
+	}
+
+	public enum FileType
+	{
+		Book = 10,		// 図書, 和図書, 洋図書
+		AV = 11,		// AV
+		EBook = 19,		// 電子ブック
+		Magazine = 20,	// 雑誌, 和雑誌, 洋雑誌
+		EJournal = 29,	// 電子ジャーナル
+		Unknown = -1
+	}
+
 	class Lookup
 	{
 		const string searchUT = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=0&kywd1_exp={0}&con1_exp=6&disp_exp=5";
@@ -30,26 +50,6 @@ namespace OpacLookup
 
 		const string libraryEntryBegin = "bl_item_tr\">";
 		const string libraryEntryEnd = "</tr>";
-
-		public class ItemRecord
-		{
-			public FileType Type { get; set; }
-			public string Name { get; set; }
-			public string URL { get; set; }
-			public Tuple<string, string>[] Other { get; set; }
-			public string BibID { get; set; }
-			public string NCID { get; set; }
-		}
-
-		public enum FileType
-		{
-			Book = 10,		// 図書, 和図書, 洋図書
-			AV = 11,		// AV
-			EBook = 19,		// 電子ブック
-			Magazine = 20,	// 雑誌, 和雑誌, 洋雑誌
-			EJournal = 29,	// 電子ジャーナル
-			Unknown = -1
-		}
 
 		public static ItemRecord[] SearchByISBN(string ISBN)
 		{
