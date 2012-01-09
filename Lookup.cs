@@ -29,12 +29,9 @@ namespace OpacLookup
 		Unknown = -1
 	}
 
-	class Lookup
+	class UTOpacLookup
 	{
-		const string searchUT = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=0&kywd1_exp={0}&con1_exp=6&disp_exp=5";
-		const string searchWebcat = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=1&nii_kywd1_exp={0}&nii_con1_exp=6&nii_disp_exp=5";
 		const string lookupBibid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?lang=0&amode=11&bibid={0}";
-		const string lookupNcid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?amode=13&dbname=BOOK&ncid={0}";
 
 		const string resultMarker = "list_result";
 		const string bibidMarker = "bibid=";
@@ -51,12 +48,12 @@ namespace OpacLookup
 		const string libraryEntryBegin = "bl_item_tr\">";
 		const string libraryEntryEnd = "</tr>";
 
-		public static ItemRecord[] SearchByISBN(string ISBN)
+		public static ItemRecord[] SearchByUrl(string url)
 		{
 			try
 			{
 				// First we look up the book by UT OPAC.
-				var items = ObtainBookListOpac(string.Format(searchUT, ISBN));
+				var items = ObtainBookListOpac(url);
 				if (items.Length != 0) return items;
 
 				// Didn't find the book on UT or Webcat.
@@ -172,7 +169,6 @@ namespace OpacLookup
 		{
 			string lookupURL;
 			if (bookID.BibID != null) lookupURL = string.Format(lookupBibid, bookID.BibID);
-			else if (bookID.NCID != null) lookupURL = string.Format(lookupNcid, bookID.NCID);
 			else throw new ArgumentException("bookID");
 			var detailPage = DownloadUTF8(lookupURL);
 
