@@ -29,6 +29,16 @@ namespace OpacLookup
 		static CiNiiBooks()
 		{
 			// Obtain library fanos.
+			var query = librarySearch + "&name=" + libraryNamePattern;
+
+			var c = new WebClient();
+			var response = Encoding.UTF8.GetString(c.DownloadData(query));
+
+			var doc = XDocument.Parse(response);
+			var fanos = new List<string>();
+			foreach (var match in doc.Descendants(XName.Get("item", xmlns)))
+				fanos.Add(match.Attribute(XName.Get("about", rdf)).Value.Split('/').Last());
+			fano = fanos.ToArray();
 		}
 
 		public static ItemRecord[] SearchByISBN(string ISBN)
