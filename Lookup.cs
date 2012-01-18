@@ -29,12 +29,9 @@ namespace OpacLookup
 		Unknown = -1
 	}
 
-	class Lookup
+	class UTOpacLookup
 	{
-		const string searchUT = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=0&kywd1_exp={0}&con1_exp=6&disp_exp=5";
-		const string searchWebcat = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?smode=1&cmode=1&nii_kywd1_exp={0}&nii_con1_exp=6&nii_disp_exp=5";
 		const string lookupBibid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?lang=0&amode=11&bibid={0}";
-		const string lookupNcid = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_details.cgi?amode=13&dbname=BOOK&ncid={0}";
 
 		const string resultMarker = "list_result";
 		const string bibidMarker = "bibid=";
@@ -51,16 +48,12 @@ namespace OpacLookup
 		const string libraryEntryBegin = "bl_item_tr\">";
 		const string libraryEntryEnd = "</tr>";
 
-		public static ItemRecord[] SearchByISBN(string ISBN)
+		public static ItemRecord[] SearchByUrl(string url)
 		{
 			try
 			{
 				// First we look up the book by UT OPAC.
-				var items = ObtainBookListOpac(string.Format(searchUT, ISBN));
-				if (items.Length != 0) return items;
-
-				// Then try look up by Webcat.
-				items = ObtainBookListWebcat(string.Format(searchWebcat, ISBN));
+				var items = ObtainBookListOpac(url);
 				if (items.Length != 0) return items;
 
 				// Didn't find the book on UT or Webcat.
@@ -70,16 +63,6 @@ namespace OpacLookup
 		}
 
 		public static ItemRecord[] ObtainBookListOpac(string url)
-		{
-			return ObtainBookListInternal(url, ProcessOpacItem);
-		}
-
-		public static ItemRecord[] ObtainBookListWebcat(string url)
-		{
-			return ObtainBookListInternal(url, ProcessWebcatItem);
-		}
-
-		static ItemRecord[] ObtainBookListInternal(string url, Func<XElement[], ItemRecord> processor)
 		{
 			// Download the search result page.
 			var list = DownloadUTF8(url);
@@ -104,7 +87,7 @@ namespace OpacLookup
 
 			// Parse as an XML document and process the useful part into ItemRecord.
 			return XDocument.Parse(searchResult).Element("div").Elements("table")
-				.Select(x => processor(x.Element("tr").Elements("td").ToArray())).ToArray();
+				.Select(x => ProcessOpacItem(x.Element("tr").Elements("td").ToArray())).ToArray();
 		}
 
 		static ItemRecord ProcessOpacItem(XElement[] item)
@@ -132,20 +115,6 @@ namespace OpacLookup
 				Other = other.ToArray(),
 				BibID = bibid,
 				NCID = null
-			};
-		}
-
-		static ItemRecord ProcessWebcatItem(XElement[] item)
-		{
-			var title = ProcessLinkName(item[2].Element("span"));
-			return new ItemRecord
-			{
-				Type = item[1].Value != "雑誌" ? item[1].Value != "図書" ? FileType.Unknown : FileType.Book : FileType.Magazine,
-				Name = title.Item1,
-				URL = null,
-				Other = new[] { new Tuple<string, string>(item[2].Element("div").Value, null) },
-				BibID = null,
-				NCID = title.Item2.NCID
 			};
 		}
 
@@ -200,7 +169,6 @@ namespace OpacLookup
 		{
 			string lookupURL;
 			if (bookID.BibID != null) lookupURL = string.Format(lookupBibid, bookID.BibID);
-			else if (bookID.NCID != null) lookupURL = string.Format(lookupNcid, bookID.NCID);
 			else throw new ArgumentException("bookID");
 			var detailPage = DownloadUTF8(lookupURL);
 

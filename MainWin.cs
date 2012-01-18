@@ -71,7 +71,7 @@ namespace OpacLookup
 
 			// Validate and normalize the user input of ISBN.
 			string ISBN = null;
-			try { ISBN = Lookup.ValidateISBN(row.ISBN); }
+			try { ISBN = UTOpacLookup.ValidateISBN(row.ISBN); }
 			catch (ArgumentNullException) { row.SetColumnError(table.ISBNColumn, "ISBN を入力してください。"); }
 			catch (ArgumentOutOfRangeException) { row.SetColumnError(table.ISBNColumn, "ISBN の形式に誤りがあります。"); }
 			catch (ArgumentException) { row.SetColumnError(table.ISBNColumn, "ISBN に誤りがあります。"); }
@@ -166,7 +166,15 @@ namespace OpacLookup
 						// Go search at CiNii Books.
 						var records = CiNiiBooks.SearchByISBN(ISBN);
 						if (records.Length != 1) throw new ApplicationException("複数件の書籍がヒットしました。");
-						result = Lookup.ExtractDataByDetailPage(records[0]);
+						var record = records[0];
+
+						// Override the search URL with UT OPAC URL.
+						record.URL = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?ou_srh=1&ncid=" + records[0].NCID;
+						records = UTOpacLookup.SearchByUrl(record.URL);
+						if (records.Length != 1) throw new ApplicationException("複数件の書籍がヒットしました。");
+
+						record.BibID = records[0].BibID;
+						result = UTOpacLookup.ExtractDataByDetailPage(record);
 					}
 					catch (ApplicationException exp)
 					{
@@ -188,7 +196,7 @@ namespace OpacLookup
 							detail.Add(field.Item1, field.Item2);
 
 					// Analyze the codes.
-					Lookup.AnalyzeCodeString(detail["CODES"], out bibid, out ncid, out ISBN);
+					UTOpacLookup.AnalyzeCodeString(detail["CODES"], out bibid, out ncid, out ISBN);
 
 					// Add the library collection.
 					var collectionCount = 0;
@@ -279,10 +287,10 @@ namespace OpacLookup
 						if ((line = line.Trim().Replace("-", "")) == string.Empty) continue;
 
 						string ISBN;
-						try { ISBN = Lookup.ValidateISBN(line.Substring(0, 13)); }
+						try { ISBN = UTOpacLookup.ValidateISBN(line.Substring(0, 13)); }
 						catch
 						{
-							try { ISBN = Lookup.ValidateISBN(line.Substring(0, 10)); }
+							try { ISBN = UTOpacLookup.ValidateISBN(line.Substring(0, 10)); }
 							catch { continue; }
 						}
 
