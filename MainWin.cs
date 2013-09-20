@@ -165,13 +165,14 @@ namespace OpacLookup
                     {
                         // Go search at CiNii Books.
                         var records = CiNiiBooks.SearchByISBN(ISBN);
-                        if (records.Length != 1) throw new ApplicationException("複数件の書籍がヒットしました。");
+                        if (records.Length == 0) throw new ApplicationException("東大内に所蔵がありませんでした。");
+                        else if (records.Length > 1) throw new ApplicationException("複数件の書籍がヒットしました。");
                         var record = records[0];
 
                         // Override the search URL with UT OPAC URL.
                         record.URL = "https://opac.dl.itc.u-tokyo.ac.jp/opac/opac_list.cgi?ou_srh=1&ncid=" + records[0].NCID;
                         records = UTOpacLookup.SearchByUrl(record.URL);
-                        if (records.Length != 1) throw new ApplicationException("複数件の書籍がヒットしました。");
+                        if (records.Length > 1) throw new ApplicationException("複数件の書籍がヒットしました。");
 
                         record.BibID = records[0].BibID;
                         result = UTOpacLookup.ExtractDataByDetailPage(record);
